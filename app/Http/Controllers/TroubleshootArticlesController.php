@@ -20,6 +20,7 @@ class TroubleshootArticlesController extends Controller
             'content'=>'required|string'
         ]);
 
+
         $troubleshoot = TroubleshootArticles::create($fields);
 
         return response()->json(['message'=> 'Article created successful'],200);
