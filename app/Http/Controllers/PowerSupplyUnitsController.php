@@ -3,31 +3,54 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\PowerSupplyUnits;
+use Illuminate\Support\Facades\Validator;
 
 class PowerSupplyUnitsController extends Controller
 {
+    // Get request
     public function index()
     {
        return PowerSupplyUnits::all();
     }
 
+    // Post for creating
     public function store(Request $request)
     {
-        $fields = $request->validate([
+        $fields = Validator::make($request->all(), [
             'psu_name'           => 'required|string',
             'brand'              => 'required|string',
             'wattage'            => 'required|integer',
             'efficiency_rating'  => 'required|string',
         ]);
 
-        $power_supply_units = PowerSupplyUnits::create($fields);
+        if($fields->fails()){
+            return response()->json([
+                'message'=>'All fields are mandatory',
+                'error'=>$fields->errors()
+            ], 422);
+        }
 
-        return response()->json(['message'=> 'Created successful'],200);
+        $validatedData = $fields->validated();
+        $power_supply_units = PowerSupplyUnits::create($validatedData);
+
+        return response()->json([
+            'status'=> true,
+            'message'=> 'Created successful',
+            'data' => $power_supply_units
+        ], 200);
     }
 
-    public function show($id)
+    // Get request by specific ID
+    public function show($psu_id)
     {
-        $power_supply_units = PowerSupplyUnits::findOrFail($id);
+        $power_supply_units = PowerSupplyUnits::find($psu_id);
+        if (!$power_supply_units) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Power Supply Unit data not found'
+            ], 404);
+        }
         return response()->json([
             'status' => true,
             'message' => 'Power Supply Unit data found successfully',
@@ -35,32 +58,55 @@ class PowerSupplyUnitsController extends Controller
         ], 200);
     }
 
-
-
+    // Update
 public function update(Request $request, $power_supply_units)
 {
-    $fields = $request->validate([
+    $fields = Validator::make($request->all(), [
         'psu_name'           => 'required|string',
         'brand'              => 'required|string',
         'wattage'            => 'required|integer',
         'efficiency_rating'  => 'required|string',
     ]);
 
+    if($fields->fails()){
+        return response()->json([
+            'message'=>'All fields are mandatory',
+            'error'=>$fields->errors()
+        ], 422);
+    }
+
     $power_supply_units = PowerSupplyUnits::find($power_supply_units);
+    if (!$power_supply_units) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Power Supply Unit data not found'
+        ], 404);
+    }
 
-    $power_supply_units->update($fields);
+    $power_supply_units->update($fields->validated());
 
-    return response()->json($power_supply_units, 201);
-}
+    return response()->json([
+        'status' => true,
+        'message' => 'Power Supply Unit Data Updated Successfully',
+        'data' => $power_supply_units], 201);
+        
+    }
 
-
-
+    // Delete requests by specific ID
     public function destroy($power_supply_units)
     {
         $power_supply_units = PowerSupplyUnits::find($power_supply_units);
+        if (!$power_supply_units) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Power Supply Unit data not found'
+            ], 404);
+        }
         $power_supply_units->delete();
 
         return response()->json([
-            'message' => 'Power Supply Unit data deleted successfully'
+            'message' => 'Power Supply Unit data deleted successfully',
+            'data' => $power_supply_units
         ], 200);
-    }}
+    }
+}

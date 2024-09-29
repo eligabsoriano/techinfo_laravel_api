@@ -2,32 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ssds;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SsdsController extends Controller
 {
+
+    // Get request
     public function index()
     {
        return Ssds::all();
     }
 
+    // Post for creating
     public function store(Request $request)
     {
-        $fields = $request->validate([
+        $fields = Validator::make($request->all(), [
             'ssd_name'       => 'required|string',
             'brand'          => 'required|string',
             'interface_type' => 'required|string',
             'capacity_gb'    => 'required|integer',
         ]);
 
-        $ssds = Ssds::create($fields);
+        if($fields->fails()){
+            return response()->json([
+                'message'=>'All fields are mandatory',
+                'error'=>$fields->errors()
+            ],422);
+        }
 
-        return response()->json(['message'=> 'Created successful'],200);
+        $validatedData = $fields->validated();
+        $ssds = Ssds::create($validatedData);
+
+        return response()->json([
+            'status' => true,
+            'message'=> 'Created successful',
+            'data' => $ssds
+        ],200);
     }
 
-    public function show($id)
+    // Get request by specific ID
+    public function show($ssd_id)
     {
-        $ssds = Ssds::findOrFail($id);
+        $ssds = Ssds::find($ssd_id);
+
+        if (!$ssds) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Ssd data not found'
+            ], 404);
+        }
+
         return response()->json([
             'status' => true,
             'message' => 'Ssd data found successfully',
@@ -35,33 +61,56 @@ class SsdsController extends Controller
         ], 200);
     }
 
-
-
+    // Update
 public function update(Request $request, $ssds)
 {
-    $fields = $request->validate([
-            'ssd_name'       => 'required|string',
-            'brand'          => 'required|string',
-            'interface_type' => 'required|string',
-            'capacity_gb'    => 'required|integer',
+    $fields = Validator::make($request->all(), [
+        'ssd_name'       => 'required|string',
+        'brand'          => 'required|string',
+        'interface_type' => 'required|string',
+        'capacity_gb'    => 'required|integer',
     ]);
+
+    if($fields->fails()){
+        return response()->json([
+            'message'=>'All fields are mandatory',
+            'error'=>$fields->errors()
+        ],422);
+    }
 
     $ssds = Ssds::find($ssds);
 
-    $ssds->update($fields);
+    if (!$ssds) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Ssd data not found'
+        ], 404);
+    }
 
-    return response()->json($ssds, 201);
+    $ssds->update($fields->validated());
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Ssd Data Updated Successfully',
+        'data' => $ssds], 201);
 }
 
-
-
+    // Delete requests by specific ID
     public function destroy($ssds)
     {
         $ssds = Ssds::find($ssds);
+        if (!$ssds) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Ssd data not found'
+            ], 404);
+        }
+
         $ssds->delete();
 
         return response()->json([
-            'message' => 'Ssd data deleted successfully'
+            'message' => 'Ssd data deleted successfully',
+            "data" => $ssds
         ], 200);
     }
 }

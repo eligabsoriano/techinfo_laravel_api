@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CpuCoolers extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'cooler_id';
     protected $fillable = [
         'cooler_name',
         'brand',

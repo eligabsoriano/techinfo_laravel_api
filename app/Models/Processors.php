@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Processors extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'processor_id';
     protected $fillable = [
         'processor_name',
         'brand',

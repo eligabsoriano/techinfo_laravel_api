@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Gpus extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'gpu_id';
     protected $fillable = [
         'gpu_name',
         'brand',

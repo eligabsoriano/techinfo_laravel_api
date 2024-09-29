@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ssds extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'ssd_id';
     protected $fillable = [
         'ssd_name',
         'brand',

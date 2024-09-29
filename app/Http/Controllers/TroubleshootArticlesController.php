@@ -4,68 +4,110 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TroubleshootArticles;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\TroubleshootArticlesController;
 
 class TroubleshootArticlesController extends Controller
 {
+
+    // Get request
     public function index()
     {
        return TroubleshootArticles::all();
     }
 
+    // Post for creating
     public function store(Request $request)
     {
-        $fields = $request->validate([
-            'title'=>'required|string',
-            'content'=>'required|string'
+        $fields = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'content' => 'required|string'
         ]);
 
+        if($fields->fails()){
+            return response()->json([
+                'message'=>'All fields are mandatory',
+                'error'=>$fields->errors()
+            ], 422);
+        }
 
-        $troubleshoot = TroubleshootArticles::create($fields);
+        $validatedData = $fields->validated();
+        $troubleshoot = TroubleshootArticles::create($validatedData);
 
-        return response()->json(['message'=> 'Article created successful'],200);
-    }
-
-    public function show($id)
-    {
-        $troubleshoot = TroubleshootArticles::findOrFail($id);
         return response()->json([
-            'status' => true,
-            'message' => 'Article found successfully',
-            $troubleshoot
+            'message'=> 'Article created successful',
+            'data' => $troubleshoot
         ], 200);
     }
 
+    // Get request by specific ID
+    public function show($id)
+    {
+        $troubleshoot = TroubleshootArticles::find($id);
 
+        if (!$troubleshoot) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Article not found'
+            ], 404);
+        }
 
+        return response()->json([
+            'status' => true,
+            'message' => 'Article found successfully',
+            "data" => $troubleshoot
+        ], 200);
+    }
+
+    // Update
 public function update(Request $request, $troubleshootArticles)
 {
-    $fields = $request->validate([
+    $fields = Validator::make($request->all(), [
         'title' => 'required|string',
         'content' => 'required|string'
     ]);
 
+    if($fields->fails()){
+        return response()->json([
+            'message'=>'All fields are mandatory',
+            'error'=>$fields->errors()
+        ], 422);
+    }
+
+
     $troubleshootArticles = TroubleshootArticles::find($troubleshootArticles);
 
-    $troubleshootArticles->update($fields);
+    if (!$troubleshootArticles) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Article not found'
+        ], 404);
+    }
 
-    return response()->json($troubleshootArticles, 201);
+    $troubleshootArticles->update($fields->validated());
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Article Updated Successfully',
+        'data' => $troubleshootArticles], 201);
 }
 
-
-
+    // Delete requests by specific ID
     public function destroy($troubleshootArticles)
     {
         $troubleshootArticles = TroubleshootArticles::find($troubleshootArticles);
+
+        if (!$troubleshootArticles) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Article not found'
+            ], 404);
+        }
+
         $troubleshootArticles->delete();
 
         return response()->json([
             'message' => 'Article deleted successfully'
         ], 200);
     }
-
 }
-
-
-
-

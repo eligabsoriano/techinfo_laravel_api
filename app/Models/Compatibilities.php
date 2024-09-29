@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Compatibilities extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'compatibility_id';
     protected $fillable = [
         'processor_id',
         'motherboard_id',

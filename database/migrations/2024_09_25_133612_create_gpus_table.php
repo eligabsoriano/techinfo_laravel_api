@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gpus', function (Blueprint $table) {
+        Schema::create('gpuses', function (Blueprint $table) {
             $table->id('gpu_id');
             $table->string('gpu_name');
             $table->string('brand');
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gpus');
+        Schema::dropIfExists('gpuses');
     }
 };

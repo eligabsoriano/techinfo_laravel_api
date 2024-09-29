@@ -2,66 +2,109 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CpuCoolers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CpuCoolersController extends Controller
 {
+    // Get request
     public function index()
     {
        return CpuCoolers::all();
     }
 
+    // Post for creating
     public function store(Request $request)
     {
-        $fields = $request->validate([
+        $fields = Validator::make($request->all(), [
             'cooler_name'          => 'required|string',
             'brand'                => 'required|string',
             'socket_type_supported' => 'required|string',
             'max_cooler_height_mm'  => 'required|integer',
         ]);
 
-        $cpu_coolers = CpuCoolers::create($fields);
+        if($fields->fails()){
+            return response()->json([
+                'message'=>'All fields are mandatory',
+                'error'=>$fields->errors()
+            ], 422);
+        }
 
-        return response()->json(['message'=> 'Created successful'],200);
-    }
+        $validatedData = $fields->validated();
+        $cpu_coolers = CpuCoolers::create($validatedData);
 
-    public function show($id)
-    {
-        $cpu_coolers = CpuCoolers::findOrFail($id);
         return response()->json([
-            'status' => true,
-            'message' => 'Cpu Cooler data found successfully',
+            'status'=> true,
+            'message'=> 'Created successful',
             'data' => $cpu_coolers
         ], 200);
     }
 
+    // Get request by specific ID
+    public function show($cooler_id)
+    {
+        $cpu_coolers = CpuCoolers::find($cooler_id);
+        if (!$cpu_coolers) {
+            return response()->json([
+                'status' => false,
+                'message' => 'CPU Cooler data not found'
+            ], 404);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'CPU Cooler data found successfully',
+            'data' => $cpu_coolers
+        ], 200);
+    }
 
-
+    //Update
 public function update(Request $request, $cpu_coolers)
 {
-    $fields = $request->validate([
+    $fields = Validator::make($request->all(), [
         'cooler_name'          => 'required|string',
         'brand'                => 'required|string',
         'socket_type_supported' => 'required|string',
         'max_cooler_height_mm'  => 'required|integer',
     ]);
 
+    if($fields->fails()){
+        return response()->json([
+            'message'=>'All fields are mandatory',
+            'error'=>$fields->errors()
+        ], 422);
+    }
+
     $cpu_coolers = CpuCoolers::find($cpu_coolers);
+    if (!$cpu_coolers) {
+        return response()->json([
+            'status' => false,
+            'message' => 'CPU Cooler data not found'
+        ], 404);
+    }
 
-    $cpu_coolers->update($fields);
-
-    return response()->json($cpu_coolers, 201);
+    $cpu_coolers->update($fields->validated());
+    return response()->json([
+        'status' => true,
+        'message' => 'CPU Cooler Data Updated Successfully',
+        'data' => $cpu_coolers], 201);
 }
 
-
-
+    // Delete requests by specific ID
     public function destroy($cpu_coolers)
     {
         $cpu_coolers = CpuCoolers::find($cpu_coolers);
+        if (!$cpu_coolers) {
+            return response()->json([
+                'status' => false,
+                'message' => 'CPU Cooler data not found'
+            ], 404);
+        }
         $cpu_coolers->delete();
 
         return response()->json([
-            'message' => 'Cpu Cooler data deleted successfully'
+            'message' => 'Cpu Cooler data deleted successfully',
+            'data' => $cpu_coolers
         ], 200);
     }
 }

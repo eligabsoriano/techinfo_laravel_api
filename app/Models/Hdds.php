@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Hdds extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'hdd_id';
     protected $fillable = [
         'hdd_name',
         'brand',

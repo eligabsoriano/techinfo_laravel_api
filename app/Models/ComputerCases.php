@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ComputerCases extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'case_id';
     protected $fillable = [
         'case_name',
         'brand',

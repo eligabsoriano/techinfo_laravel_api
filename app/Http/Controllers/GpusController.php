@@ -2,70 +2,111 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gpus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class GpusController extends Controller
 {
+    // Get request
     public function index()
     {
        return Gpus::all();
     }
 
+    // Post for creating
     public function store(Request $request)
     {
-        $fields = $request->validate([
+        $fields = Validator::make($request->all(), [
             'gpu_name'         => 'required|string',
             'brand'            => 'required|string',
             'interface_type'   => 'required|string',
             'tdp_wattage'      => 'required|integer',
             'gpu_length_mm'    => 'required|integer',
-
         ]);
 
-        $gpus = Gpus::create($fields);
+        if($fields->fails()){
+            return response()->json([
+                'message'=>'All fields are mandatory',
+                'error'=>$fields->errors()
+            ], 422);
+        }
 
-        return response()->json(['message'=> 'Created successful'],200);
-    }
+        $validatedData = $fields->validated();
+        $gpuses = Gpus::create($validatedData);
 
-    public function show($id)
+        return response()->json([
+            'status'=> true,
+            'message'=> 'Created successful',
+            'data' => $gpuses
+        ], 200);
+}
+
+    // Get request by specific ID
+    public function show($gpu_id)
     {
-        $gpus = Gpus::findOrFail($id);
+        $gpuses = Gpus::find($gpu_id);
+        if (!$gpuses) {
+            return response()->json([
+                'status' => false,
+                'message' => 'GPU data not found'
+            ], 404);
+        }
         return response()->json([
             'status' => true,
-            'message' => 'Gpu data found successfully',
-            'data' => $gpus
+            'message' => 'GPU data found successfully',
+            'data' => $gpuses
         ], 200);
     }
 
 
-
-public function update(Request $request, $gpus)
+    //Update
+public function update(Request $request, $gpuses)
 {
-    $fields = $request->validate([
-            'gpu_name'         => 'required|string',
-            'brand'            => 'required|string',
-            'interface_type'   => 'required|string',
-            'tdp_wattage'      => 'required|integer',
-            'gpu_length_mm'    => 'required|integer',
-
+    $fields = Validator::make($request->all(), [
+        'gpu_name'         => 'required|string',
+        'brand'            => 'required|string',
+        'interface_type'   => 'required|string',
+        'tdp_wattage'      => 'required|integer',
+        'gpu_length_mm'    => 'required|integer',
     ]);
 
-    $gpus = Gpus::find($gpus);
+    if($fields->fails()){
+        return response()->json([
+            'message'=>'All fields are mandatory',
+            'error'=>$fields->errors()
+        ], 422);
+    }
 
-    $gpus->update($fields);
+    $gpuses = Gpus::find($gpuses);
+    if (!$gpuses) {
+        return response()->json([
+            'status' => false,
+            'message' => 'GPU data not found'
+        ], 404);
+    }
 
-    return response()->json($gpus, 201);
+    $gpuses->update($fields->validated());
+    return response()->json([
+        'status' => true,
+        'message' => 'GPU Data Updated Successfully',
+        'data' => $gpuses], 201);
 }
-
-
-
-    public function destroy($gpus)
+    // Delete requests by specific ID
+    public function destroy($gpuses)
     {
-        $gpus = Gpus::find($gpus);
-        $gpus->delete();
+        $gpuses = Gpus::find($gpuses);
+        if (!$gpuses) {
+            return response()->json([
+                'status' => false,
+                'message' => 'GPU data not found'
+            ], 404);
+        }
+        $gpuses->delete();
 
         return response()->json([
-            'message' => 'Gpu data deleted successfully'
+            'message' => 'Gpu data deleted successfully',
+            'data' => $gpuses
         ], 200);
     }
 }

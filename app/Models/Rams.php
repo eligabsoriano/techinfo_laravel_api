@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Rams extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'ram_id';
     protected $fillable = [
         'ram_name',
         'brand',

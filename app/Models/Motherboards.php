@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Motherboards extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'motherboard_id';
     protected $fillable = [
         'motherboard_name',
         'brand',

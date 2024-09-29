@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Motherboards;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MotherboardsController extends Controller
 {
+    // Get request
     public function index()
     {
        return Motherboards::all();
     }
 
+    // Post for creating
     public function store(Request $request)
     {
-        $fields = $request->validate([
+        $fields = Validator::make($request->all(), [
             'motherboard_name' => 'required|string',
             'brand'            => 'required|string',
             'socket_type'      => 'required|string',
@@ -24,14 +27,33 @@ class MotherboardsController extends Controller
             'form_factor'      => 'required|string',
         ]);
 
-        $motherboards = Motherboards::create($fields);
+        if($fields->fails()){
+            return response()->json([
+                'message'=>'All fields are mandatory',
+                'error'=>$fields->errors()
+            ], 422);
+        }
 
-        return response()->json(['message'=> 'Created successful'],200);
+        $validatedData = $fields->validated();
+        $motherboards = Motherboards::create($validatedData);
+
+        return response()->json([
+            'status'=> true,
+            'message'=> 'Created successful',
+            'data' => $motherboards
+        ], 200);
     }
 
-    public function show($id)
+    // Get request by specific ID
+    public function show($motherboard_id)
     {
-        $motherboards = Motherboards::findOrFail($id);
+        $motherboards = Motherboards::find($motherboard_id);
+        if (!$motherboards) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Motherboard data not found'
+            ], 404);
+        }
         return response()->json([
             'status' => true,
             'message' => 'Motherboard data found successfully',
@@ -39,11 +61,10 @@ class MotherboardsController extends Controller
         ], 200);
     }
 
-
-
+    // Update
 public function update(Request $request, $motherboards)
 {
-    $fields = $request->validate([
+    $fields = Validator::make($request->all(), [
         'motherboard_name' => 'required|string',
         'brand'            => 'required|string',
         'socket_type'      => 'required|string',
@@ -53,22 +74,45 @@ public function update(Request $request, $motherboards)
         'form_factor'      => 'required|string',
     ]);
 
+    if($fields->fails()){
+        return response()->json([
+            'message'=>'All fields are mandatory',
+            'error'=>$fields->errors()
+        ], 422);
+    }
+
     $motherboards = Motherboards::find($motherboards);
+    if (!$motherboards) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Motherboard data not found'
+        ], 404);
+    }
 
-    $motherboards->update($fields);
+    $motherboards->update($fields->validated());
 
-    return response()->json($motherboards, 201);
-}
+    return response()->json([
+        'status' => true,
+        'message' => 'Motherboard Data Updated Successfully',
+        'data' => $motherboards], 201);
 
+    }
 
-
+    // Delete requests by specific ID
     public function destroy($motherboards)
     {
         $motherboards = Motherboards::find($motherboards);
+        if (!$motherboards) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Motherboard data not found'
+            ], 404);
+        }
         $motherboards->delete();
 
         return response()->json([
-            'message' => 'Motherboard data deleted successfully'
+            'message' => 'Motherboard data deleted successfully',
+            'data' => $motherboards
         ], 200);
     }
 }

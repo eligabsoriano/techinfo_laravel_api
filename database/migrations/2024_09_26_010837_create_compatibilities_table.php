@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('processor_id')->constrained('processors', 'processor_id')->onDelete('cascade');
             $table->foreignId('motherboard_id')->constrained('motherboards', 'motherboard_id')->onDelete('cascade');
             $table->foreignId('ram_id')->constrained('rams', 'ram_id')->onDelete('cascade');
-            $table->foreignId('gpu_id')->constrained('gpus', 'gpu_id')->onDelete('cascade');
+            $table->foreignId('gpu_id')->constrained('gpuses', 'gpu_id')->onDelete('cascade');
             $table->foreignId('psu_id')->constrained('power_supply_units', 'psu_id')->onDelete('cascade');
             $table->foreignId('case_id')->constrained('computer_cases', 'case_id')->onDelete('cascade');
             $table->foreignId('cooler_id')->constrained('cpu_coolers', 'cooler_id')->onDelete('cascade');
