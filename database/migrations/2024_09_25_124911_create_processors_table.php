@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('tdp_wattage');
             $table->decimal('base_clock_speed', 4, 2);
             $table->decimal('max_clock_speed', 4, 2);
+            $table->text('link')->nullable();
             $table->timestamps();
         });
     }

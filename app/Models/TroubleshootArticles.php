@@ -11,7 +11,7 @@ class TroubleshootArticles extends Model
     use HasFactory;
     protected $fillable = [
         'title',
-        'content'
+        'content',
+        'video_embed'
         ];
-
 }

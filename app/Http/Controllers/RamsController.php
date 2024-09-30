@@ -23,6 +23,7 @@ class RamsController extends Controller
             'ram_type'         => 'required|string',
             'ram_capacity_gb'  => 'required|integer',
             'ram_speed_mhz'    => 'required|integer',
+            'link'             => 'nullable|string',
         ]);
 
         if($fields->fails()){
@@ -49,7 +50,7 @@ class RamsController extends Controller
         if (!$rams) {
             return response()->json([
                 'status' => false,
-                'message' => 'Ssd data not found'
+                'message' => 'Ram data not found'
             ], 404);
         }
 
@@ -69,6 +70,7 @@ public function update(Request $request, $rams)
         'ram_type'         => 'required|string',
         'ram_capacity_gb'  => 'required|integer',
         'ram_speed_mhz'    => 'required|integer',
+        'link'             => 'nullable|string',
     ]);
 
     if($fields->fails()){
@@ -83,7 +85,7 @@ public function update(Request $request, $rams)
     if (!$rams) {
         return response()->json([
             'status' => false,
-            'message' => 'Ssd data not found'
+            'message' => 'Ram data not found'
         ], 404);
     }
 
@@ -102,7 +104,7 @@ public function update(Request $request, $rams)
         if (!$rams) {
             return response()->json([
                 'status' => false,
-                'message' => 'Ram data not found'
+                'message' => 'Ram Data not found'
             ], 404);
         }
 

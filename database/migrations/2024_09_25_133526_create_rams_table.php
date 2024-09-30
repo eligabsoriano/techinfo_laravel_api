@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('ram_type');
             $table->integer('ram_capacity_gb');
             $table->integer('ram_speed_mhz');
+            $table->text('link')->nullable();
             $table->timestamps();
         });
     }

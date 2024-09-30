@@ -13,6 +13,7 @@ class Hdds extends Model
         'hdd_name',
         'brand',
         'interface_type',
-        'capacity_gb'
+        'capacity_gb',
+        'link'
     ];
 }

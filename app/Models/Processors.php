@@ -15,6 +15,7 @@ class Processors extends Model
         'socket_type',
         'tdp_wattage',
         'base_clock_speed',
-        'max_clock_speed'
+        'max_clock_speed',
+        'link'
     ];
 }

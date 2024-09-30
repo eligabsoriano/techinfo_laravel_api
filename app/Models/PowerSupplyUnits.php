@@ -13,6 +13,7 @@ class PowerSupplyUnits extends Model
         'psu_name',
         'brand',
         'wattage',
-        'efficiency_rating'
+        'efficiency_rating',
+        'link'
     ];
 }

@@ -18,10 +18,11 @@ class CpuCoolersController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'cooler_name'          => 'required|string',
-            'brand'                => 'required|string',
+            'cooler_name'           => 'required|string',
+            'brand'                 => 'required|string',
             'socket_type_supported' => 'required|string',
             'max_cooler_height_mm'  => 'required|integer',
+            'link'                  => 'nullable|string'
         ]);
 
         if($fields->fails()){
@@ -62,10 +63,11 @@ class CpuCoolersController extends Controller
 public function update(Request $request, $cpu_coolers)
 {
     $fields = Validator::make($request->all(), [
-        'cooler_name'          => 'required|string',
-        'brand'                => 'required|string',
+        'cooler_name'           => 'required|string',
+        'brand'                 => 'required|string',
         'socket_type_supported' => 'required|string',
         'max_cooler_height_mm'  => 'required|integer',
+        'link'                  => 'nullable|string'
     ]);
 
     if($fields->fails()){

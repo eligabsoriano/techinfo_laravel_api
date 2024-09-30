@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hdds', function (Blueprint $table) {
-            $table->id('hdd_id');
-            $table->string('hdd_name');
-            $table->string('brand');
-            $table->string('interface_type');
-            $table->integer('capacity_gb');
-            $table->text('link')->nullable();
+        Schema::create('accounts', function (Blueprint $table) {
+            $table->id();
+            $table->string('username')->unique();
+            $table->string('password');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hdds');
+        Schema::dropIfExists('accounts');
     }
 };

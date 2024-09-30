@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
+            $table->text('video_embed')->nullable();
             $table->timestamps();
         });
     }

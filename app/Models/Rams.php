@@ -14,6 +14,7 @@ class Rams extends Model
         'brand',
         'ram_type',
         'ram_capacity_gb',
-        'ram_speed_mhz'
+        'ram_speed_mhz',
+        'link'
     ];
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('interface_type');
             $table->integer('tdp_wattage');
             $table->integer('gpu_length_mm');
+            $table->text('link')->nullable();
             $table->timestamps();
         });
     }

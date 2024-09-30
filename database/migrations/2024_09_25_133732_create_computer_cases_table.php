@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('brand');
             $table->string('form_factor_supported');
             $table->integer('max_gpu_length_mm');
+            $table->text('link')->nullable();
             $table->timestamps();
         });
     }

@@ -16,6 +16,7 @@ class Motherboards extends Model
         'ram_type',
         'max_ram_slots',
         'gpu_interface',
-        'form_factor'
+        'form_factor',
+        'link'
     ];
 }

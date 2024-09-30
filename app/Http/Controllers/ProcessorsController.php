@@ -24,6 +24,7 @@ class ProcessorsController extends Controller
             'tdp_wattage'       => 'required|integer',
             'base_clock_speed'  => 'required|numeric',
             'max_clock_speed'   => 'required|numeric',
+            'link'              => 'nullable|string',
         ]);
 
         if($fields->fails()){
@@ -71,6 +72,7 @@ public function update(Request $request, $processors)
         'tdp_wattage'       => 'required|integer',
         'base_clock_speed'  => 'required|numeric',
         'max_clock_speed'   => 'required|numeric',
+        'link'              => 'nullable|string',
     ]);
 
     if($fields->fails()){

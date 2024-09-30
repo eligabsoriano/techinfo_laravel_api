@@ -18,10 +18,11 @@ class HddsController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'hdd_name'      => 'required|string',
-            'brand'         => 'required|string',
+            'hdd_name'       => 'required|string',
+            'brand'          => 'required|string',
             'interface_type' => 'required|string',
-            'capacity_gb'   => 'required|integer',
+            'capacity_gb'    => 'required|integer',
+            'link'           => 'nullable|string'
         ]);
 
         if($fields->fails()){
@@ -62,10 +63,11 @@ class HddsController extends Controller
 public function update(Request $request, $hdds)
 {
     $fields = Validator::make($request->all(), [
-        'hdd_name'      => 'required|string',
-        'brand'         => 'required|string',
+        'hdd_name'       => 'required|string',
+        'brand'          => 'required|string',
         'interface_type' => 'required|string',
-        'capacity_gb'   => 'required|integer',
+        'capacity_gb'    => 'required|integer',
+        'link'           => 'nullable|string'
     ]);
 
     if($fields->fails()){

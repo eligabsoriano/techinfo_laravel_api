@@ -23,8 +23,9 @@ class MotherboardsController extends Controller
             'socket_type'      => 'required|string',
             'ram_type'         => 'required|string',
             'max_ram_slots'    => 'required|integer',
-            'gpu_interface'     => 'required|string',
+            'gpu_interface'    => 'required|string',
             'form_factor'      => 'required|string',
+            'link'             => 'nullable|string',
         ]);
 
         if($fields->fails()){
@@ -70,8 +71,9 @@ public function update(Request $request, $motherboards)
         'socket_type'      => 'required|string',
         'ram_type'         => 'required|string',
         'max_ram_slots'    => 'required|integer',
-        'gpu_interface'     => 'required|string',
+        'gpu_interface'    => 'required|string',
         'form_factor'      => 'required|string',
+        'link'             => 'nullable|string',
     ]);
 
     if($fields->fails()){

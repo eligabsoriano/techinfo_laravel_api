@@ -20,8 +20,9 @@ class TroubleshootArticlesController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'content' => 'required|string'
+            'title'         => 'required|string',
+            'content'       => 'required|string',
+            'video_embed'   => 'nullable|string'
         ]);
 
         if($fields->fails()){
@@ -63,8 +64,9 @@ class TroubleshootArticlesController extends Controller
 public function update(Request $request, $troubleshootArticles)
 {
     $fields = Validator::make($request->all(), [
-        'title' => 'required|string',
-        'content' => 'required|string'
+            'title'         => 'required|string',
+            'content'       => 'required|string',
+            'video_embed'   => 'nullable|string'
     ]);
 
     if($fields->fails()){
@@ -84,7 +86,7 @@ public function update(Request $request, $troubleshootArticles)
         ], 404);
     }
 
-    $troubleshootArticles->update($fields->validated());
+   $troubleshootArticles->update($fields->validated());
 
     return response()->json([
         'status' => true,

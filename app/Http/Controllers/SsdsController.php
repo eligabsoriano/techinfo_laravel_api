@@ -23,6 +23,7 @@ class SsdsController extends Controller
             'brand'          => 'required|string',
             'interface_type' => 'required|string',
             'capacity_gb'    => 'required|integer',
+            'link'           => 'nullable|string'
         ]);
 
         if($fields->fails()){
@@ -50,13 +51,13 @@ class SsdsController extends Controller
         if (!$ssds) {
             return response()->json([
                 'status' => false,
-                'message' => 'Ssd data not found'
+                'message' => 'SSD data not found'
             ], 404);
         }
 
         return response()->json([
             'status' => true,
-            'message' => 'Ssd data found successfully',
+            'message' => 'SSD data found successfully',
             'data' => $ssds
         ], 200);
     }
@@ -69,6 +70,7 @@ public function update(Request $request, $ssds)
         'brand'          => 'required|string',
         'interface_type' => 'required|string',
         'capacity_gb'    => 'required|integer',
+        'link'           => 'nullable|string'
     ]);
 
     if($fields->fails()){
@@ -83,7 +85,7 @@ public function update(Request $request, $ssds)
     if (!$ssds) {
         return response()->json([
             'status' => false,
-            'message' => 'Ssd data not found'
+            'message' => 'SSD data not found'
         ], 404);
     }
 
@@ -91,7 +93,7 @@ public function update(Request $request, $ssds)
 
     return response()->json([
         'status' => true,
-        'message' => 'Ssd Data Updated Successfully',
+        'message' => 'SSD Data Updated Successfully',
         'data' => $ssds], 201);
 }
 
@@ -102,14 +104,14 @@ public function update(Request $request, $ssds)
         if (!$ssds) {
             return response()->json([
                 'status' => false,
-                'message' => 'Ssd data not found'
+                'message' => 'SSD data not found'
             ], 404);
         }
 
         $ssds->delete();
 
         return response()->json([
-            'message' => 'Ssd data deleted successfully',
+            'message' => 'SSD data deleted successfully',
             "data" => $ssds
         ], 200);
     }

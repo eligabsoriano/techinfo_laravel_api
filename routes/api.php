@@ -6,6 +6,7 @@ use App\Http\Controllers\GpusController;
 use App\Http\Controllers\HddsController;
 use App\Http\Controllers\RamsController;
 use App\Http\Controllers\SsdsController;
+use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\CpuCoolersController;
 use App\Http\Controllers\ProcessorsController;
 use App\Http\Controllers\MotherboardsController;
@@ -25,6 +26,7 @@ Route::apiResource('cpu_coolers', CpuCoolersController::class);
 Route::apiResource('hdds', HddsController::class);
 Route::apiResource('ssds', SsdsController::class);
 Route::apiResource('compatibilities', CompatibilitiesController::class);
+Route::apiResource('accounts', AccountsController::class);
 
 
 Route::get('/user', function (Request $request) {

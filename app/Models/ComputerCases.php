@@ -13,6 +13,7 @@ class ComputerCases extends Model
         'case_name',
         'brand',
         'form_factor_supported',
-        'max_gpu_length_mm'
+        'max_gpu_length_mm',
+        'link'
     ];
 }

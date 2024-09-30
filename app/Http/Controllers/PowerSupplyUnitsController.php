@@ -22,6 +22,7 @@ class PowerSupplyUnitsController extends Controller
             'brand'              => 'required|string',
             'wattage'            => 'required|integer',
             'efficiency_rating'  => 'required|string',
+            'link'               => 'nullable|string',
         ]);
 
         if($fields->fails()){
@@ -66,6 +67,7 @@ public function update(Request $request, $power_supply_units)
         'brand'              => 'required|string',
         'wattage'            => 'required|integer',
         'efficiency_rating'  => 'required|string',
+        'link'               => 'nullable|string',
     ]);
 
     if($fields->fails()){
@@ -89,7 +91,7 @@ public function update(Request $request, $power_supply_units)
         'status' => true,
         'message' => 'Power Supply Unit Data Updated Successfully',
         'data' => $power_supply_units], 201);
-        
+
     }
 
     // Delete requests by specific ID

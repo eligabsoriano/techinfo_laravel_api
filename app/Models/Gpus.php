@@ -14,6 +14,7 @@ class Gpus extends Model
         'brand',
         'interface_type',
         'tdp_wattage',
-        'gpu_length_mm'
+        'gpu_length_mm',
+        'link'
     ];
 }

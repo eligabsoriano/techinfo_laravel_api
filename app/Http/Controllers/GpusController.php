@@ -23,6 +23,7 @@ class GpusController extends Controller
             'interface_type'   => 'required|string',
             'tdp_wattage'      => 'required|integer',
             'gpu_length_mm'    => 'required|integer',
+            'link'             => 'nullable|string'
         ]);
 
         if($fields->fails()){
@@ -69,6 +70,7 @@ public function update(Request $request, $gpuses)
         'interface_type'   => 'required|string',
         'tdp_wattage'      => 'required|integer',
         'gpu_length_mm'    => 'required|integer',
+        'link'             => 'nullable|string'
     ]);
 
     if($fields->fails()){

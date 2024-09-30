@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('max_ram_slots');
             $table->string('gpu_interface');
             $table->string('form_factor');
+            $table->text('link')->nullable();
             $table->timestamps();
         });
     }

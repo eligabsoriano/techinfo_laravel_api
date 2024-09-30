@@ -13,6 +13,7 @@ class CpuCoolers extends Model
         'cooler_name',
         'brand',
         'socket_type_supported',
-        'max_cooler_height_mm'
+        'max_cooler_height_mm',
+        'link'
     ];
 }

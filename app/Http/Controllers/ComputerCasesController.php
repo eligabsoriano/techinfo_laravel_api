@@ -18,10 +18,11 @@ class ComputerCasesController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'case_name'            => 'required|string',
-            'brand'                => 'required|string',
+            'case_name'             => 'required|string',
+            'brand'                 => 'required|string',
             'form_factor_supported' => 'required|string',
             'max_gpu_length_mm'     => 'required|integer',
+            'link'                  => 'nullable|string',
         ]);
 
         if($fields->fails()){
@@ -62,10 +63,11 @@ class ComputerCasesController extends Controller
 public function update(Request $request, $computer_cases)
 {
     $fields = Validator::make($request->all(), [
-        'case_name'            => 'required|string',
-        'brand'                => 'required|string',
+        'case_name'             => 'required|string',
+        'brand'                 => 'required|string',
         'form_factor_supported' => 'required|string',
         'max_gpu_length_mm'     => 'required|integer',
+        'link'                  => 'nullable|string',
     ]);
 
     if($fields->fails()){
