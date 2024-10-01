@@ -85,17 +85,17 @@ class CompatibilitiesCheckersController extends Controller
 
         // Check RAM Compatibility
         if ($ram && $motherboard) {
-            if ($ram->type !== $motherboard->supported_ram_type) {
+            if ($ram->ram_type !== $motherboard->supported_ram_type) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The RAM {$ram->name} is not compatible with the motherboard {$motherboard->name} due to RAM type.";
+                $feedback['issues'][] = "The RAM {$ram->ram_name} (Type: {$ram->ram_type}) is not compatible with the motherboard {$motherboard->motherboard_name} (Supported Type: {$motherboard->supported_ram_type}) due to RAM type.";
             }
-            if ($ram->speed > $motherboard->max_ram_speed) {
+            if ($ram->ram_speed_mhz > $motherboard->max_ram_speed) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The RAM {$ram->name} exceeds the maximum supported speed of the motherboard {$motherboard->name}.";
+                $feedback['issues'][] = "The RAM {$ram->ram_name} exceeds the maximum supported speed of the motherboard {$motherboard->motherboard_name}.";
             }
-            if ($ram->capacity > $motherboard->max_ram_capacity) {
+            if ($ram->ram_capacity_gb > $motherboard->max_ram_capacity) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The RAM {$ram->name} exceeds the maximum capacity supported by the motherboard {$motherboard->name}.";
+                $feedback['issues'][] = "The RAM {$ram->ram_name} exceeds the maximum capacity supported by the motherboard {$motherboard->motherboard_name}.";
             }
         }
 
