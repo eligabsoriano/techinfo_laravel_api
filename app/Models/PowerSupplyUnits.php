@@ -14,6 +14,7 @@ class PowerSupplyUnits extends Model
         'brand',
         'wattage',
         'efficiency_rating',
+        'has_required_connectors',
         'link'
     ];
 }

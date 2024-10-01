@@ -18,13 +18,14 @@ class ProcessorsController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'processor_name'    => 'required|string',
-            'brand'             => 'required|string',
-            'socket_type'       => 'required|string',
-            'tdp_wattage'       => 'required|integer',
-            'base_clock_speed'  => 'required|numeric',
-            'max_clock_speed'   => 'required|numeric',
-            'link'              => 'nullable|string',
+            'processor_name'     => 'required|string',
+            'brand'              => 'required|string',
+            'socket_type'        => 'required|string',
+            'compatible_chipsets' => 'nullable|string',
+            'power'              => 'required|integer',
+            'base_clock_speed'   => 'required|numeric',
+            'max_clock_speed'    => 'required|numeric',
+            'link'               => 'nullable|string',
         ]);
 
         if($fields->fails()){
@@ -66,13 +67,14 @@ class ProcessorsController extends Controller
 public function update(Request $request, $processors)
 {
     $fields = Validator::make($request->all(),[
-        'processor_name'    => 'required|string',
-        'brand'             => 'required|string',
-        'socket_type'       => 'required|string',
-        'tdp_wattage'       => 'required|integer',
-        'base_clock_speed'  => 'required|numeric',
-        'max_clock_speed'   => 'required|numeric',
-        'link'              => 'nullable|string',
+        'processor_name'     => 'required|string',
+        'brand'              => 'required|string',
+        'socket_type'        => 'required|string',
+        'compatible_chipsets' => 'nullable|string',
+        'power'              => 'required|integer',
+        'base_clock_speed'   => 'required|numeric',
+        'max_clock_speed'    => 'required|numeric',
+        'link'               => 'nullable|string',
     ]);
 
     if($fields->fails()){

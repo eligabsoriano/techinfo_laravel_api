@@ -23,6 +23,7 @@ class RamsController extends Controller
             'ram_type'         => 'required|string',
             'ram_capacity_gb'  => 'required|integer',
             'ram_speed_mhz'    => 'required|integer',
+            'power_consumption'  => 'required|integer',
             'link'             => 'nullable|string',
         ]);
 
@@ -70,6 +71,7 @@ public function update(Request $request, $rams)
         'ram_type'         => 'required|string',
         'ram_capacity_gb'  => 'required|integer',
         'ram_speed_mhz'    => 'required|integer',
+        'power_consumption'  => 'required|integer',
         'link'             => 'nullable|string',
     ]);
 

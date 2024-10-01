@@ -13,7 +13,8 @@ class Processors extends Model
         'processor_name',
         'brand',
         'socket_type',
-        'tdp_wattage',
+        'compatible_chipsets',
+        'power',
         'base_clock_speed',
         'max_clock_speed',
         'link'

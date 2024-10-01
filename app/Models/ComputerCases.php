@@ -14,6 +14,10 @@ class ComputerCases extends Model
         'brand',
         'form_factor_supported',
         'max_gpu_length_mm',
+        'max_hdd_count',
+        'max_ssd_count',
+        'current_hdd_count',
+        'current_ssd_count',
         'link'
     ];
 }

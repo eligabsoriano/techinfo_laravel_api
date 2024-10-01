@@ -22,6 +22,10 @@ class ComputerCasesController extends Controller
             'brand'                 => 'required|string',
             'form_factor_supported' => 'required|string',
             'max_gpu_length_mm'     => 'required|integer',
+            'max_hdd_count'         => 'required|integer',
+            'max_ssd_count'         => 'required|integer',
+            'current_hdd_count'     => 'required|integer',
+            'current_ssd_count'     => 'required|integer',
             'link'                  => 'nullable|string',
         ]);
 
@@ -67,6 +71,10 @@ public function update(Request $request, $computer_cases)
         'brand'                 => 'required|string',
         'form_factor_supported' => 'required|string',
         'max_gpu_length_mm'     => 'required|integer',
+        'max_hdd_count'         => 'required|integer',
+        'max_ssd_count'         => 'required|integer',
+        'current_hdd_count'     => 'required|integer',
+        'current_ssd_count'     => 'required|integer',
         'link'                  => 'nullable|string',
     ]);
 

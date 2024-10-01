@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Validator;
 
 class CompatibilitiesController extends Controller
 {
+    public function getCompatibilityData()
+    {
+        $data=['compatibilities' => Compatibilities::all(),];
+        return response()->json($data); // Return all data as JSON
+    }
      // Get request
     public function index()
     {

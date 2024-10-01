@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('processor_name');
             $table->string('brand');
             $table->string('socket_type');
-            $table->integer('tdp_wattage');
+            $table->string('compatible_chipsets')->nullable();  // JSON type for structured data
+            $table->integer('power');
             $table->decimal('base_clock_speed', 4, 2);
             $table->decimal('max_clock_speed', 4, 2);
             $table->text('link')->nullable();

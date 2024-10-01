@@ -22,6 +22,7 @@ class PowerSupplyUnitsController extends Controller
             'brand'              => 'required|string',
             'wattage'            => 'required|integer',
             'efficiency_rating'  => 'required|string',
+            'has_required_connectors' => 'required|boolean',
             'link'               => 'nullable|string',
         ]);
 
@@ -67,6 +68,7 @@ public function update(Request $request, $power_supply_units)
         'brand'              => 'required|string',
         'wattage'            => 'required|integer',
         'efficiency_rating'  => 'required|string',
+        'has_required_connectors' => 'required|boolean',
         'link'               => 'nullable|string',
     ]);
 

@@ -7,13 +7,17 @@ use App\Http\Controllers\HddsController;
 use App\Http\Controllers\RamsController;
 use App\Http\Controllers\SsdsController;
 use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\AggregateController;
 use App\Http\Controllers\CpuCoolersController;
 use App\Http\Controllers\ProcessorsController;
 use App\Http\Controllers\MotherboardsController;
 use App\Http\Controllers\ComputerCasesController;
 use App\Http\Controllers\CompatibilitiesController;
 use App\Http\Controllers\PowerSupplyUnitsController;
+use App\Http\Controllers\ScreenResolutionsController;
 use App\Http\Controllers\TroubleshootArticlesController;
+use App\Http\Controllers\BottleneckCalculatorsController;
+use App\Http\Controllers\CompatibilitiesCheckersController;
 
 Route::apiResource('troubleshoot_articles', TroubleshootArticlesController::class);
 Route::apiResource('processors', ProcessorsController::class);
@@ -27,6 +31,10 @@ Route::apiResource('hdds', HddsController::class);
 Route::apiResource('ssds', SsdsController::class);
 Route::apiResource('compatibilities', CompatibilitiesController::class);
 Route::apiResource('accounts', AccountsController::class);
+Route::apiResource('screen_resolutions', ScreenResolutionsController::class);
+Route::apiResource('aggregate', AggregateController::class);
+Route::apiResource('bottleneck_calculators', BottleneckCalculatorsController::class);
+Route::get('/compatibility/check', [CompatibilitiesCheckersController::class, 'check']);
 
 
 Route::get('/user', function (Request $request) {

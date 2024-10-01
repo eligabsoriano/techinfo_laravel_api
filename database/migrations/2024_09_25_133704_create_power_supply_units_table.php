@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('brand');
             $table->integer('wattage');
             $table->string('efficiency_rating');
+            $table->boolean('has_required_connectors');
             $table->text('link')->nullable();
             $table->timestamps();
         });

@@ -15,6 +15,7 @@ class Rams extends Model
         'ram_type',
         'ram_capacity_gb',
         'ram_speed_mhz',
+        'power_consumption',
         'link'
     ];
 }
