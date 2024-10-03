@@ -13,6 +13,10 @@ class PowerSupplyUnits extends Model
         'psu_name',
         'brand',
         'wattage',
+        'continuous_wattage',
+        'gpu_6_pin_connectors',
+        'gpu_8_pin_connectors',
+        'gpu_12_pin_connectors',
         'efficiency_rating',
         'has_required_connectors',
         'link'

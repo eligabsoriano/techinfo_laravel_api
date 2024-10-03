@@ -19,6 +19,9 @@ return new class extends Migration
             $table->integer('tdp_wattage');
             $table->integer('gpu_length_mm');
             $table->integer('required_power');
+            $table->integer('required_6_pin_connectors');
+            $table->integer('required_8_pin_connectors');
+            $table->integer('required_12_pin_connectors');
             $table->text('link')->nullable();
             $table->timestamps();
         });

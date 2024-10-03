@@ -77,7 +77,7 @@ class CompatibilitiesCheckersController extends Controller
             }
 
             // Check chipset compatibility
-            if (is_array($processor->compatible_chipsets) && !in_array($motherboard->chipset, $processor->compatible_chipsets)) {
+            if (!empty($processor->compatible_chipsets) && !in_array($motherboard->chipset, (array)$processor->compatible_chipsets)) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The processor {$processor->name} is not compatible with the motherboard {$motherboard->name} due to chipset compatibility.";
             }
@@ -101,26 +101,39 @@ class CompatibilitiesCheckersController extends Controller
 
         // Check GPU Compatibility
         if ($gpu && $psu && $motherboard) {
-            if ($gpu->required_power > $psu->wattage) {
-                $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The GPU {$gpu->name} requires more power than the PSU can provide.";
-            }
-            if (!$motherboard->has_pcie_slot) {
-                $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The motherboard {$motherboard->name} does not have a PCIe slot for the GPU {$gpu->name}.";
-            }
-        }
+            $total_gpu_power = $gpu->required_power; // If supporting multi-GPU, sum the power of all GPUs
+            $total_power = $processor->power + $total_gpu_power + $ram->power_consumption +
+                           ($hdd ? $hdd->power_consumption : 0) +
+                           ($ssd ? $ssd->power_consumption : 0) +
+                           ($cooler ? $cooler->power_consumption : 0);
 
-        // Check Power Supply Compatibility
-        if ($psu && $processor && $gpu && $ram) {
-            $total_power = $processor->power + $gpu->required_power + $ram->power_consumption;
-            if ($psu->wattage < $total_power) {
+            // PSU Efficiency Handling
+            $psu_efficiency_factor = match ($psu->efficiency_rating) {
+                '80+ Bronze' => 0.82,
+                '80+ Silver' => 0.85,
+                '80+ Gold' => 0.87,
+                '80+ Platinum' => 0.90,
+                default => 0.80,
+            };
+
+            // Ensure PSU provides enough wattage for total power consumption with headroom
+            if ($psu->continuous_wattage * $psu_efficiency_factor < $total_power * 1.2) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The PSU {$psu->name} does not provide enough wattage for your selected components.";
+                $feedback['issues'][] = "The PSU {$psu->name} does not provide enough continuous wattage with a safe margin for your selected components.";
             }
-            if (!$psu->has_required_connectors) {
+
+            // PSU Connector Validation
+            if ($gpu->required_6_pin_connectors > $psu->gpu_6_pin_connectors) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The PSU {$psu->name} does not have the required connectors for the motherboard or GPU.";
+                $feedback['issues'][] = "The PSU {$psu->name} does not have enough 6-pin connectors for the GPU {$gpu->name}.";
+            }
+            if ($gpu->required_8_pin_connectors > $psu->gpu_8_pin_connectors) {
+                $feedback['is_compatible'] = false;
+                $feedback['issues'][] = "The PSU {$psu->name} does not have enough 8-pin connectors for the GPU {$gpu->name}.";
+            }
+            if ($gpu->required_12_pin_connectors && $gpu->required_12_pin_connectors > $psu->gpu_12_pin_connectors) {
+                $feedback['is_compatible'] = false;
+                $feedback['issues'][] = "The PSU {$psu->name} does not have enough 12-pin connectors for the GPU {$gpu->name}.";
             }
         }
 
@@ -130,7 +143,7 @@ class CompatibilitiesCheckersController extends Controller
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The case {$case->name} does not support the motherboard form factor {$motherboard->form_factor}.";
             }
-            if ($case->max_gpu_length_mm < $gpu->length_mm) {
+            if ($case->max_gpu_length_mm < $gpu->gpu_length_mm) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The GPU {$gpu->name} is too long for the case {$case->name}.";
             }
@@ -165,15 +178,15 @@ class CompatibilitiesCheckersController extends Controller
 
         // Add components to feedback
         $feedback['components'] = [
-            'processor' => $processor,
-            'motherboard' => $motherboard,
-            'ram' => $ram,
-            'gpu' => $gpu,
-            'psu' => $psu,
-            'case' => $case,
-            'cooler' => $cooler,
-            'hdd' => $hdd,
-            'ssd' => $ssd,
+            'processor' => $processor->name,
+            'motherboard' => $motherboard->name,
+            'ram' => $ram->name,
+            'gpu' => $gpu->name,
+            'psu' => $psu->name,
+            'case' => $case->name,
+            'cooler' => $cooler->name,
+            'hdd' => $hdd ? $hdd->name : null,
+            'ssd' => $ssd ? $ssd->name : null,
         ];
 
         return $feedback;

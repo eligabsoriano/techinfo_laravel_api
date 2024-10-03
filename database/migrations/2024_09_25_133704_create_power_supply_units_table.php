@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('psu_name');
             $table->string('brand');
             $table->integer('wattage');
+            $table->integer('continuous_wattage');
+            $table->integer('gpu_6_pin_connectors');
+            $table->integer('gpu_8_pin_connectors');
+            $table->integer('gpu_12_pin_connectors');
             $table->string('efficiency_rating');
             $table->boolean('has_required_connectors');
             $table->text('link')->nullable();

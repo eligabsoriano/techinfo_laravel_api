@@ -18,12 +18,16 @@ class PowerSupplyUnitsController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'psu_name'           => 'required|string',
-            'brand'              => 'required|string',
-            'wattage'            => 'required|integer',
-            'efficiency_rating'  => 'required|string',
-            'has_required_connectors' => 'required|boolean',
-            'link'               => 'nullable|string',
+            'psu_name'               => 'required|string',
+            'brand'                  => 'required|string',
+            'wattage'                => 'required|integer',
+            'continuous_wattage'     => 'required|integer',  // Use this for validation
+            'efficiency_rating'      => 'required|string',
+            'has_required_connectors'=> 'required|boolean', // May be calculated based on connectors below
+            'gpu_6_pin_connectors'   => 'required|integer', //
+            'gpu_8_pin_connectors'   => 'required|integer', //
+            'gpu_12_pin_connectors'  => 'nullable|integer',  // High-end GPUs may need 12-pin connectors
+            'link'                   => 'nullable|string',
         ]);
 
         if($fields->fails()){
@@ -64,12 +68,16 @@ class PowerSupplyUnitsController extends Controller
 public function update(Request $request, $power_supply_units)
 {
     $fields = Validator::make($request->all(), [
-        'psu_name'           => 'required|string',
-        'brand'              => 'required|string',
-        'wattage'            => 'required|integer',
-        'efficiency_rating'  => 'required|string',
-        'has_required_connectors' => 'required|boolean',
-        'link'               => 'nullable|string',
+        'psu_name'               => 'required|string',
+        'brand'                  => 'required|string',
+        'wattage'                => 'required|integer',
+        'continuous_wattage'     => 'required|integer',  // Use this for validation
+        'efficiency_rating'      => 'required|string',
+        'has_required_connectors'=> 'required|boolean', // May be calculated based on connectors below
+        'gpu_6_pin_connectors'   => 'required|integer', //
+        'gpu_8_pin_connectors'   => 'required|integer', //
+        'gpu_12_pin_connectors'  => 'nullable|integer',  // High-end GPUs may need 12-pin connectors
+        'link'                   => 'nullable|string',
     ]);
 
     if($fields->fails()){
