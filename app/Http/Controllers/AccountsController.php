@@ -18,8 +18,9 @@ class AccountsController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'username' => 'required|unique:accounts|string',
-            'password' => 'required|string',
+            'username' => 'required|string',
+            "email" => 'required|email',
+            'password' => 'required|min:8|string',
         ]);
 
         if ($fields->fails()) {
@@ -62,8 +63,9 @@ class AccountsController extends Controller
     public function update(Request $request, $id)
     {
         $fields = Validator::make($request->all(), [
-            'username' => 'required|string|unique:accounts,username,' . $id,
-            'password' => 'required|string',  // Password is optional in update
+            'username' => 'required|string',
+            "email" => 'required|email|unique:accounts,email' . $id,
+            'password' => 'required|min:8|string',
         ]);
 
         if ($fields->fails()) {

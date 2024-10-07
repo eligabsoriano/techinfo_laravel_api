@@ -75,7 +75,7 @@ public function update(Request $request, $gpuses)
         'tdp_wattage'      => 'required|integer',
         'gpu_length_mm'    => 'required|integer',
         'required_power'   => 'required|integer',
-        'required_6_pin_connectors' => 'required|integer', // Add required connector types
+        'required_6_pin_connectors' => 'required|integer',
         'required_8_pin_connectors' => 'required|integer',
         'required_12_pin_connectors' => 'nullable|integer',
         'link'             => 'nullable|string'

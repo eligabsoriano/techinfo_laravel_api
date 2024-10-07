@@ -12,6 +12,7 @@ use App\Http\Controllers\CpuCoolersController;
 use App\Http\Controllers\ProcessorsController;
 use App\Http\Controllers\MotherboardsController;
 use App\Http\Controllers\ComputerCasesController;
+use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\CompatibilitiesController;
 use App\Http\Controllers\PowerSupplyUnitsController;
 use App\Http\Controllers\ScreenResolutionsController;
@@ -32,9 +33,13 @@ Route::apiResource('ssds', SsdsController::class);
 Route::apiResource('compatibilities', CompatibilitiesController::class);
 Route::apiResource('accounts', AccountsController::class);
 Route::apiResource('screen_resolutions', ScreenResolutionsController::class);
-Route::apiResource('aggregate', AggregateController::class);
+Route::get('/aggregate', [AggregateController::class, 'index']);
 Route::apiResource('bottleneck_calculators', BottleneckCalculatorsController::class);
-Route::get('/compatibility/check', [CompatibilitiesCheckersController::class, 'check']);
+Route::get('compatibility_checker', [CompatibilitiesCheckersController::class, 'check']);
+Route::get('/aggregate/{modelType}', [AggregateController::class, 'getModelData']);
+
+Route::post('admin/request-reset', [ForgetPasswordController::class, 'requestReset']);
+Route::post('admin/reset-password', [ForgetPasswordController::class, 'resetPassword']);
 
 
 Route::get('/user', function (Request $request) {
