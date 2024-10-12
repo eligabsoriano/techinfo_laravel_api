@@ -12,8 +12,8 @@ class ForgetPassword extends Model
     protected $table = 'password_reset_tokens';
     protected $guarded = [];
 
-    // Disable timestamps
-    public $timestamps = false;
+    // Enable timestamps
+    public $timestamps = true;
 
     protected $fillable = [
         'email',

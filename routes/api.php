@@ -20,6 +20,7 @@ use App\Http\Controllers\TroubleshootArticlesController;
 use App\Http\Controllers\BottleneckCalculatorsController;
 use App\Http\Controllers\CompatibilitiesCheckersController;
 
+// Define routes for all models (CRUD routes)
 Route::apiResource('troubleshoot_articles', TroubleshootArticlesController::class);
 Route::apiResource('processors', ProcessorsController::class);
 Route::apiResource('motherboards', MotherboardsController::class);
@@ -33,11 +34,20 @@ Route::apiResource('ssds', SsdsController::class);
 Route::apiResource('compatibilities', CompatibilitiesController::class);
 Route::apiResource('accounts', AccountsController::class);
 Route::apiResource('screen_resolutions', ScreenResolutionsController::class);
+
+// Route to get aggregated data
 Route::get('/aggregate', [AggregateController::class, 'index']);
+
+// Define the Bottleneck Calculator route
 Route::apiResource('bottleneck_calculators', BottleneckCalculatorsController::class);
+
+// Compatibility checker route
 Route::get('compatibility_checker', [CompatibilitiesCheckersController::class, 'check']);
+
+// Route to get data for a specific model type, handled by AggregateController
 Route::get('/aggregate/{modelType}', [AggregateController::class, 'getModelData']);
 
+// Routes for the forget password system
 Route::post('admin/request-reset', [ForgetPasswordController::class, 'requestReset']);
 Route::post('admin/reset-password', [ForgetPasswordController::class, 'resetPassword']);
 
