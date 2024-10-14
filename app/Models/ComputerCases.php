@@ -18,6 +18,7 @@ class ComputerCases extends Model
         'max_ssd_count',
         'current_hdd_count',
         'current_ssd_count',
+        'airflow_rating',
         'link'
     ];
 }

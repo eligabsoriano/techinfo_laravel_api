@@ -73,39 +73,62 @@ class CompatibilitiesCheckersController extends Controller
         if ($processor && $motherboard) {
             if ($processor->socket_type !== $motherboard->socket_type) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The processor {$processor->name} is not compatible with the motherboard {$motherboard->name} due to socket type.";
+                $feedback['issues'][] = "The processor {$processor->processor_name} is not compatible with the motherboard {$motherboard->motherboard_name} due to socket type.";
             }
 
             // Check chipset compatibility
             if (!empty($processor->compatible_chipsets) && !in_array($motherboard->chipset, (array)$processor->compatible_chipsets)) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The processor {$processor->name} is not compatible with the motherboard {$motherboard->name} due to chipset compatibility.";
+                $feedback['issues'][] = "The processor {$processor->processor_name} is not compatible with the motherboard {$motherboard->motherboard_name} due to chipset compatibility.";
             }
         }
 
         // Check RAM Compatibility
         if ($ram && $motherboard) {
-            if ($ram->ram_type !== $motherboard->supported_ram_type) {
+           // Check if the motherboard supports multiple RAM types by splitting the supported_ram_type field
+           //ram type compatibility
+            $supported_ram_types = array_map('trim', explode(',', $motherboard->supported_ram_type));
+
+            if (!in_array($ram->ram_type, $supported_ram_types)) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The RAM {$ram->ram_name} (Type: {$ram->ram_type}) is not compatible with the motherboard {$motherboard->motherboard_name} (Supported Type: {$motherboard->supported_ram_type}) due to RAM type.";
+                $feedback['issues'][] = "The RAM {$ram->ram_name} (Type: {$ram->ram_type}) is not compatible with the motherboard {$motherboard->motherboard_name} (Supported Types: " . implode(', ', $supported_ram_types) . ") due to RAM type.";
             }
-            if ($ram->ram_speed_mhz > $motherboard->max_ram_speed) {
+
+            // RAM Speed Compatibility
+            $ram_speed_mhz = (int) filter_var($ram->ram_speed_mhz, FILTER_SANITIZE_NUMBER_INT);
+            $motherboard_max_ram_speed = (int) filter_var($motherboard->max_ram_speed, FILTER_SANITIZE_NUMBER_INT);
+            if ($ram_speed_mhz > $motherboard_max_ram_speed) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The RAM {$ram->ram_name} exceeds the maximum supported speed of the motherboard {$motherboard->motherboard_name}.";
             }
-            if ($ram->ram_capacity_gb > $motherboard->max_ram_capacity) {
+
+            // RAM Capacity Compatibility
+            $ram_capacity_gb = (int) filter_var($ram->ram_capacity_gb, FILTER_SANITIZE_NUMBER_INT);
+            $motherboard_max_ram_capacity = (int) filter_var($motherboard->max_ram_capacity, FILTER_SANITIZE_NUMBER_INT);
+            if ($ram_capacity_gb > $motherboard_max_ram_capacity) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The RAM {$ram->ram_name} exceeds the maximum capacity supported by the motherboard {$motherboard->motherboard_name}.";
+            }
+
+            // RAM Slot Compatibility (Assume 1 stick of RAM)
+            if ($motherboard->max_ram_slots < 1) {
+                $feedback['is_compatible'] = false;
+                $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have enough RAM slots for the selected RAM.";
             }
         }
 
         // Check GPU Compatibility
         if ($gpu && $psu && $motherboard) {
-            $total_gpu_power = $gpu->required_power; // If supporting multi-GPU, sum the power of all GPUs
-            $total_power = $processor->power + $total_gpu_power + $ram->power_consumption +
-                           ($hdd ? $hdd->power_consumption : 0) +
-                           ($ssd ? $ssd->power_consumption : 0) +
-                           ($cooler ? $cooler->power_consumption : 0);
+            // Total power consumption calculation
+            $total_gpu_power = (int) filter_var($gpu->required_power, FILTER_SANITIZE_NUMBER_INT);
+            $processor_power = (int) filter_var($processor->tdp, FILTER_SANITIZE_NUMBER_INT);
+            $ram_power_consumption = (int) filter_var($ram->power_consumption, FILTER_SANITIZE_NUMBER_INT);
+
+            // Calculate total power requirements
+            $total_power = $processor_power + $total_gpu_power + $ram_power_consumption +
+                        ($hdd ? $hdd->power_consumption : 0) +
+                        ($ssd ? $ssd->power_consumption : 0) +
+                        ($cooler ? $cooler->power_consumption : 0);
 
             // PSU Efficiency Handling
             $psu_efficiency_factor = match ($psu->efficiency_rating) {
@@ -117,37 +140,73 @@ class CompatibilitiesCheckersController extends Controller
             };
 
             // Ensure PSU provides enough wattage for total power consumption with headroom
-            if ($psu->continuous_wattage * $psu_efficiency_factor < $total_power * 1.2) {
+            $psu_continuous_wattage = (int) filter_var($psu->continuous_wattage, FILTER_SANITIZE_NUMBER_INT);
+            if ($psu_continuous_wattage * $psu_efficiency_factor < $total_power * 1.2) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The PSU {$psu->name} does not provide enough continuous wattage with a safe margin for your selected components.";
+                $feedback['issues'][] = "The PSU {$psu->psu_name} does not provide enough continuous wattage with a safe margin for your selected components.";
             }
 
             // PSU Connector Validation
             if ($gpu->required_6_pin_connectors > $psu->gpu_6_pin_connectors) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The PSU {$psu->name} does not have enough 6-pin connectors for the GPU {$gpu->name}.";
+                $feedback['issues'][] = "The PSU {$psu->psu_name} does not have enough 6-pin connectors for the GPU {$gpu->gpu_name}.";
             }
             if ($gpu->required_8_pin_connectors > $psu->gpu_8_pin_connectors) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The PSU {$psu->name} does not have enough 8-pin connectors for the GPU {$gpu->name}.";
+                $feedback['issues'][] = "The PSU {$psu->psu_name} does not have enough 8-pin connectors for the GPU {$gpu->gpu_name}.";
             }
             if ($gpu->required_12_pin_connectors && $gpu->required_12_pin_connectors > $psu->gpu_12_pin_connectors) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The PSU {$psu->name} does not have enough 12-pin connectors for the GPU {$gpu->name}.";
+                $feedback['issues'][] = "The PSU {$psu->psu_name} does not have enough 12-pin connectors for the GPU {$gpu->gpu_name}.";
             }
         }
 
         // Check Case Compatibility
+        $gpu_length_mm = (int) filter_var($gpu->gpu_length_mm, FILTER_SANITIZE_NUMBER_INT);
+        $case_max_gpu_length_mm = (int) filter_var($case->max_gpu_length_mm, FILTER_SANITIZE_NUMBER_INT);
         if ($case && $motherboard && $gpu) {
             if ($case->form_factor_supported !== $motherboard->form_factor) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The case {$case->name} does not support the motherboard form factor {$motherboard->form_factor}.";
+                $feedback['issues'][] = "The case {$case->case_name} does not support the motherboard form factor {$motherboard->form_factor}.";
             }
-            if ($case->max_gpu_length_mm < $gpu->gpu_length_mm) {
+            if ($case_max_gpu_length_mm < $gpu_length_mm) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The GPU {$gpu->name} is too long for the case {$case->name}.";
+                $feedback['issues'][] = "The GPU {$gpu->gpu_name} is too long for the case {$case->case_name}.";
             }
         }
+
+        // Check CPU Cooler Compatibility
+        if ($cooler && $processor && $case) {
+            // Check if cooler supports the processor's socket type
+            $supported_sockets = array_map('trim', explode(',', $cooler->socket_type_supported));
+            if (!in_array($processor->socket_type, $supported_sockets)) {
+                $feedback['is_compatible'] = false;
+                $feedback['issues'][] = "The cooler {$cooler->name} is not compatible with the processor {$processor->processor_name} due to socket type mismatch. Supported sockets: " . implode(', ', $supported_sockets) . ".";
+            }
+        // Check if the cooler fits within the case
+        $cooler_max_height_mm = (int) filter_var($cooler->max_cooler_height_mm, FILTER_SANITIZE_NUMBER_INT);
+        $case_max_cooler_height_mm = (int) filter_var($cooler->max_cooler_height_mm, FILTER_SANITIZE_NUMBER_INT );
+        if ($case_max_cooler_height_mm < $cooler_max_height_mm) {
+            $feedback['is_compatible'] = false;
+            $feedback['issues'][] = "The cooler {$cooler->cooler_name} is too tall to fit in the case {$case->case_name}. Case supports up to {$case_max_cooler_height_mm}mm, but the cooler height is {$cooler_max_height_mm}mm.";
+            }
+
+        // Cooler TDP compatibility check
+        $cooler_tdp = (int) filter_var($cooler->tdp_rating, FILTER_SANITIZE_NUMBER_INT);
+        $processor_tdp = (int) filter_var($processor->tdp, FILTER_SANITIZE_NUMBER_INT);
+        $gpu_tdp = (int) filter_var($gpu->tdp_wattage, FILTER_SANITIZE_NUMBER_INT);
+
+        if ($cooler_tdp < $processor_tdp + $gpu_tdp) {
+            $feedback['is_compatible'] = false;
+            $feedback['issues'][] = "The cooler {$cooler->cooler_name} cannot handle the combined TDP of the processor {$processor->processor_name} and GPU {$gpu->name}.";
+        }
+
+        // Case airflow compatibility
+        if ($gpu_tdp > 250 && $case->airflow_rating !== 'high') {
+            $feedback['is_compatible'] = false;
+            $feedback['issues'][] = "The GPU {$gpu->gpu_name} has a high TDP, but the case {$case->case_name} does not support sufficient airflow.";
+        }
+
 
         // Check HDD Compatibility
         if ($hdd && $motherboard) {
@@ -157,7 +216,7 @@ class CompatibilitiesCheckersController extends Controller
             }
             if ($case->max_hdd_count <= $case->current_hdd_count) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The case {$case->name} cannot accommodate more HDDs.";
+                $feedback['issues'][] = "The case {$case->case_name} cannot accommodate more HDDs.";
             }
         }
 
@@ -165,20 +224,20 @@ class CompatibilitiesCheckersController extends Controller
         if ($ssd && $motherboard) {
             if ($ssd->type === 'M.2' && !$motherboard->has_m2_slot) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The motherboard {$motherboard->name} does not have an M.2 slot for the SSD {$ssd->name}.";
+                $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have an M.2 slot for the SSD {$ssd->name}.";
             } elseif ($ssd->type === 'SATA' && !$motherboard->has_sata_ports) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The motherboard {$motherboard->name} does not have SATA ports for the SSD {$ssd->name}.";
+                $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have SATA ports for the SSD {$ssd->name}.";
             }
             if ($case->max_ssd_count <= $case->current_ssd_count) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The case {$case->name} cannot accommodate more SSDs.";
+                $feedback['issues'][] = "The case {$case->case_name} cannot accommodate more SSDs.";
             }
         }
 
         // Add components to feedback
         $feedback['components'] = [
-            'processor' => $processor->name,
+            'processor' => $processor->processor_name,
             'motherboard' => $motherboard->name,
             'ram' => $ram->name,
             'gpu' => $gpu->name,
@@ -190,5 +249,6 @@ class CompatibilitiesCheckersController extends Controller
         ];
 
         return $feedback;
+        }
     }
 }

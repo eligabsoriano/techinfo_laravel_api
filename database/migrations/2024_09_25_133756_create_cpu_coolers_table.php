@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('cooler_name');
             $table->string('brand');
             $table->string('socket_type_supported');
-            $table->integer('max_cooler_height_mm');
+            $table->string('max_cooler_height_mm');
+            $table->string('tdp_rating');
             $table->text('link')->nullable();
             $table->timestamps();
         });

@@ -14,6 +14,7 @@ class CpuCoolers extends Model
         'brand',
         'socket_type_supported',
         'max_cooler_height_mm',
+        'tdp_rating',
         'link'
     ];
 }

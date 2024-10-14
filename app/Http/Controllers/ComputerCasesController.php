@@ -21,11 +21,13 @@ class ComputerCasesController extends Controller
             'case_name'             => 'required|string',
             'brand'                 => 'required|string',
             'form_factor_supported' => 'required|string',
-            'max_gpu_length_mm'     => 'required|integer',
+            'max_gpu_length_mm'     => 'required|string|regex:/^\d+\s*mm$/i',
             'max_hdd_count'         => 'required|integer',
             'max_ssd_count'         => 'required|integer',
             'current_hdd_count'     => 'required|integer',
             'current_ssd_count'     => 'required|integer',
+            'airflow_rating'        => 'required|string|in:low,medium,high', // Add airflow rating for TDP compatibility checks
+            'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
             'link'                  => 'nullable|string',
         ]);
 
@@ -70,11 +72,13 @@ public function update(Request $request, $computer_cases)
         'case_name'             => 'required|string',
         'brand'                 => 'required|string',
         'form_factor_supported' => 'required|string',
-        'max_gpu_length_mm'     => 'required|integer',
+        'max_gpu_length_mm'     => 'required|string|regex:/^\d+\s*mm$/i',
         'max_hdd_count'         => 'required|integer',
         'max_ssd_count'         => 'required|integer',
         'current_hdd_count'     => 'required|integer',
         'current_ssd_count'     => 'required|integer',
+        'airflow_rating'        => 'required|string|in:low,medium,high', // Add airflow rating for TDP compatibility checks
+        'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
         'link'                  => 'nullable|string',
     ]);
 

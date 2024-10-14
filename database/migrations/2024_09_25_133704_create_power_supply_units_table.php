@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('psu_id');
             $table->string('psu_name');
             $table->string('brand');
-            $table->integer('wattage');
-            $table->integer('continuous_wattage');
+            $table->string('wattage');
+            $table->string('continuous_wattage');
             $table->integer('gpu_6_pin_connectors');
             $table->integer('gpu_8_pin_connectors');
             $table->integer('gpu_12_pin_connectors');

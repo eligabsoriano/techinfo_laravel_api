@@ -20,8 +20,8 @@ class PowerSupplyUnitsController extends Controller
         $fields = Validator::make($request->all(), [
             'psu_name'               => 'required|string',
             'brand'                  => 'required|string',
-            'wattage'                => 'required|integer',
-            'continuous_wattage'     => 'required|integer',  // Use this for validation
+            'wattage'                => 'required|string|regex:/^\d+\s*W$/i',
+            'continuous_wattage'     => 'required|string|regex:/^\d+\s*W$/i',  // Use this for validation
             'efficiency_rating'      => 'required|string',
             'has_required_connectors'=> 'required|boolean', // May be calculated based on connectors below
             'gpu_6_pin_connectors'   => 'required|integer', //
@@ -70,8 +70,8 @@ public function update(Request $request, $power_supply_units)
     $fields = Validator::make($request->all(), [
         'psu_name'               => 'required|string',
         'brand'                  => 'required|string',
-        'wattage'                => 'required|integer',
-        'continuous_wattage'     => 'required|integer',  // Use this for validation
+        'wattage'                => 'required|string|regex:/^\d+\s*W$/i',
+        'continuous_wattage'     => 'required|string|regex:/^\d+\s*W$/i',  // Use this for validation
         'efficiency_rating'      => 'required|string',
         'has_required_connectors'=> 'required|boolean', // May be calculated based on connectors below
         'gpu_6_pin_connectors'   => 'required|integer', //

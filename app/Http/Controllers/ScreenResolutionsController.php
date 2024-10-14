@@ -18,7 +18,7 @@ class ScreenResolutionsController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'resolution_size'         => 'required|string',
+            'resolution_size'  => 'required|string',
             'resolutions_name' => 'required|string',
         ]);
 
@@ -62,7 +62,7 @@ class ScreenResolutionsController extends Controller
     public function update(Request $request, $screen_resolutions_id)
     {
         $fields = Validator::make($request->all(), [
-            'resolution_size'         => 'required|string',
+            'resolution_size'  => 'required|string',
             'resolutions_name' => 'required|string',
         ]);
 

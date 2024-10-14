@@ -18,16 +18,24 @@ class GpusController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'gpu_name'         => 'required|string',
-            'brand'            => 'required|string',
-            'interface_type'   => 'required|string',
-            'tdp_wattage'      => 'required|integer',
-            'gpu_length_mm'    => 'required|integer',
-            'required_power'   => 'required|integer',
-            'required_6_pin_connectors' => 'required|integer', // Add required connector types
-            'required_8_pin_connectors' => 'required|integer',
-            'required_12_pin_connectors' => 'nullable|integer',
-            'link'             => 'nullable|string'
+            'gpu_name'               => 'required|string',            // GPU Name (e.g., RTX 4090 or RX 6600)
+            'brand'                  => 'required|string',            // Brand (e.g., NVIDIA or AMD)
+            'description'            => 'required|string',
+            'cuda_cores'             => 'nullable|integer',           // For NVIDIA GPUs (e.g., 16,384 CUDA cores)
+            'compute_units'          => 'nullable|integer',           // For AMD GPUs (e.g., 36 Compute Units)
+            'stream_processors'      => 'nullable|integer',           // For AMD GPUs (e.g., 2,304 Stream Processors)
+            'base_clock_ghz'         => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Base clock (e.g., "2.23 GHz")
+            'boost_clock_ghz'        => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Boost clock (e.g., "1.37 GHz")
+            'memory_size_gb'         => 'required|integer',           // Memory size (e.g., 24 GB or 6 GB)
+            'memory_type'            => 'required|string',            // Memory type (e.g., GDDR6X or GDDR6)
+            'memory_interface_bits'  => 'required|string|regex:/^\d+-bit$/i', // Memory Interface (e.g., 384-bit or 192-bit)
+            'tdp_wattage'            => 'required|string|regex:/^\d+\s*W$/i',  // TDP as string with 'W' (e.g., 450W or 150W)
+            'gpu_length_mm'          => 'required|string|regex:/^\d+\s*mm$/i',           // GPU length in mm
+            'required_power'         => 'required|string|regex:/^\d+\s*W$/i',           // Required PSU power
+            'required_6_pin_connectors' => 'required|integer',        // Required 6-pin connectors
+            'required_8_pin_connectors' => 'required|integer',        // Required 8-pin connectors
+            'required_12_pin_connectors' => 'nullable|integer',       // Optional 12-pin connectors
+            'link'                   => 'nullable|string'             // Optional link for GPU details
         ]);
 
         if($fields->fails()){
@@ -69,16 +77,24 @@ class GpusController extends Controller
 public function update(Request $request, $gpuses)
 {
     $fields = Validator::make($request->all(), [
-        'gpu_name'         => 'required|string',
-        'brand'            => 'required|string',
-        'interface_type'   => 'required|string',
-        'tdp_wattage'      => 'required|integer',
-        'gpu_length_mm'    => 'required|integer',
-        'required_power'   => 'required|integer',
-        'required_6_pin_connectors' => 'required|integer',
-        'required_8_pin_connectors' => 'required|integer',
-        'required_12_pin_connectors' => 'nullable|integer',
-        'link'             => 'nullable|string'
+        'gpu_name'               => 'required|string',            // GPU Name (e.g., RTX 4090 or RX 6600)
+        'brand'                  => 'required|string',            // Brand (e.g., NVIDIA or AMD)
+        'description'            => 'required|string',
+        'cuda_cores'             => 'nullable|integer',           // For NVIDIA GPUs (e.g., 16,384 CUDA cores)
+        'compute_units'          => 'nullable|integer',           // For AMD GPUs (e.g., 36 Compute Units)
+        'stream_processors'      => 'nullable|integer',           // For AMD GPUs (e.g., 2,304 Stream Processors)
+        'base_clock_ghz'         => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Base clock (e.g., "2.23 GHz")
+        'boost_clock_ghz'        => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Boost clock (e.g., "1.37 GHz")
+        'memory_size_gb'         => 'required|integer',           // Memory size (e.g., 24 GB or 6 GB)
+        'memory_type'            => 'required|string',            // Memory type (e.g., GDDR6X or GDDR6)
+        'memory_interface_bits'  => 'required|string|regex:/^\d+-bit$/i', // Memory Interface (e.g., 384-bit or 192-bit)
+        'tdp_wattage'            => 'required|string|regex:/^\d+\s*W$/i',  // TDP as string with 'W' (e.g., 450W or 150W)
+        'gpu_length_mm'          => 'required|string|regex:/^\d+\s*mm$/i',           // GPU length in mm
+        'required_power'         => 'required|string|regex:/^\d+\s*W$/i',           // Required PSU power
+        'required_6_pin_connectors' => 'required|integer',        // Required 6-pin connectors
+        'required_8_pin_connectors' => 'required|integer',        // Required 8-pin connectors
+        'required_12_pin_connectors' => 'nullable|integer',       // Optional 12-pin connectors
+        'link'                   => 'nullable|string'             // Optional link for GPU details
     ]);
 
     if($fields->fails()){

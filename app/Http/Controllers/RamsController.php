@@ -18,13 +18,14 @@ class RamsController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(),[
-            'ram_name'         => 'required|string',
-            'brand'            => 'required|string',
-            'ram_type'         => 'required|string',
-            'ram_capacity_gb'  => 'required|integer',
-            'ram_speed_mhz'    => 'required|integer',
-            'power_consumption'  => 'required|integer',
-            'link'             => 'nullable|string',
+            'ram_name'            => 'required|string',
+            'brand'               => 'required|string',
+            'ram_type'            => 'required|string',
+            'ram_capacity_gb'     => 'required|string|regex:/^\d+(\.\d+)?\s*GB$/i',
+            'ram_speed_mhz'       => 'required|string|regex:/^\d+(\.\d+)?\s*MHz$/i',
+            'cas_latency'         => 'required|string', // Format e.g., "CL18"
+            'power_consumption'   => 'required|string|regex:/^\d+(\.\d+)?\s*W$/i',
+            'link'                => 'nullable|string'
         ]);
 
         if($fields->fails()){
@@ -66,13 +67,14 @@ class RamsController extends Controller
 public function update(Request $request, $rams)
 {
     $fields = Validator::make($request->all(),[
-        'ram_name'         => 'required|string',
-        'brand'            => 'required|string',
-        'ram_type'         => 'required|string',
-        'ram_capacity_gb'  => 'required|integer',
-        'ram_speed_mhz'    => 'required|integer',
-        'power_consumption'  => 'required|integer',
-        'link'             => 'nullable|string',
+        'ram_name'            => 'required|string',
+        'brand'               => 'required|string',
+        'ram_type'            => 'required|string',
+        'ram_capacity_gb'     => 'required|string|regex:/^\d+(\.\d+)?\s*GB$/i',
+        'ram_speed_mhz'       => 'required|string|regex:/^\d+(\.\d+)?\s*MHz$/i',
+        'cas_latency'         => 'required|string', // Format e.g., "CL18"
+        'power_consumption'   => 'required|string|regex:/^\d+(\.\d+)?\s*W$/i',
+        'link'                => 'nullable|string'
     ]);
 
     if($fields->fails()){

@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id('ram_id');
             $table->string('ram_name');
             $table->string('brand');
-            $table->string('ram_type');
-            $table->integer('ram_capacity_gb');
-            $table->integer('ram_speed_mhz');
-            $table->integer('power_consumption');
-            $table->text('link')->nullable();
+            $table->string('ram_type');          // e.g., DDR4, DDR5
+            $table->string('ram_capacity_gb');  // Capacity in GB (e.g., 32)
+            $table->string('ram_speed_mhz');    // Speed in MHz (e.g., 4000)
+            $table->string('cas_latency');       // e.g., CL18
+            $table->string('power_consumption'); // Power consumption in watts (   convert)
+            $table->text('link')->nullable();    // Optional link for more details
             $table->timestamps();
         });
     }

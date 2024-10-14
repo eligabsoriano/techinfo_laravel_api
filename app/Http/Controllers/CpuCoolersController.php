@@ -21,7 +21,8 @@ class CpuCoolersController extends Controller
             'cooler_name'           => 'required|string',
             'brand'                 => 'required|string',
             'socket_type_supported' => 'required|string',
-            'max_cooler_height_mm'  => 'required|integer',
+            'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
+            'tdp_rating'            => 'required|string|regex:/^\d+\s*W$/i',
             'link'                  => 'nullable|string'
         ]);
 
@@ -66,7 +67,8 @@ public function update(Request $request, $cpu_coolers)
         'cooler_name'           => 'required|string',
         'brand'                 => 'required|string',
         'socket_type_supported' => 'required|string',
-        'max_cooler_height_mm'  => 'required|integer',
+        'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
+        'tdp_rating'            => 'required|string|regex:/^\d+\s*W$/i',
         'link'                  => 'nullable|string'
     ]);
 

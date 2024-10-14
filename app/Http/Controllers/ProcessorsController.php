@@ -18,14 +18,19 @@ class ProcessorsController extends Controller
     public function store(Request $request)
     {
         $fields = Validator::make($request->all(), [
-            'processor_name'     => 'required|string',
-            'brand'              => 'required|string',
-            'socket_type'        => 'required|string',
-            'compatible_chipsets' => 'nullable|string',
-            'power'              => 'required|integer',
-            'base_clock_speed'   => 'required|numeric',
-            'max_clock_speed'    => 'required|numeric',
-            'link'               => 'nullable|string',
+            'processor_name'           => 'required|string',
+            'brand'                    => 'required|string',
+            'description'              => 'required|string',
+            'socket_type'              => 'required|string',
+            'compatible_chipsets'      => 'nullable|string',
+            'cores'                    => 'required|integer',           // Number of cores (e.g., 8)
+            'threads'                  => 'required|integer',           // Number of threads (e.g., 16)
+            'base_clock_speed'         => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Base clock speed in GHz (e.g., 3.5)
+            'max_turbo_boost_clock_speed' => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Max turbo boost speed in GHz (e.g., 5.3)
+            'tdp'                      => 'required|string|regex:/^\d+\s*W$/i', // TDP (e.g., 125W)
+            'cache_size_mb'            => 'required|integer',           // Cache size in MB (e.g., 16)
+            'integrated_graphics'      => 'nullable|string',            // Integrated graphics (e.g., "Intel UHD Graphics 750")
+            'link'                     => 'nullable|string'
         ]);
 
         if($fields->fails()){
@@ -67,14 +72,19 @@ class ProcessorsController extends Controller
 public function update(Request $request, $processors)
 {
     $fields = Validator::make($request->all(),[
-        'processor_name'     => 'required|string',
-        'brand'              => 'required|string',
-        'socket_type'        => 'required|string',
-        'compatible_chipsets' => 'nullable|string',
-        'power'              => 'required|integer',
-        'base_clock_speed'   => 'required|numeric',
-        'max_clock_speed'    => 'required|numeric',
-        'link'               => 'nullable|string',
+        'processor_name'           => 'required|string',
+        'brand'                    => 'required|string',
+        'description'              => 'required|string',
+        'socket_type'              => 'required|string',
+        'compatible_chipsets'      => 'nullable|string',
+        'cores'                    => 'required|integer',           // Number of cores (e.g., 8)
+        'threads'                  => 'required|integer',           // Number of threads (e.g., 16)
+        'base_clock_speed'         => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Base clock speed in GHz (e.g., 3.5)
+        'max_turbo_boost_clock_speed' => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Max turbo boost speed in GHz (e.g., 5.3)
+        'tdp'                      => 'required|string|regex:/^\d+\s*W$/i', // TDP (e.g., 125W)
+        'cache_size_mb'            => 'required|integer',           // Cache size in MB (e.g., 16)
+        'integrated_graphics'      => 'nullable|string',            // Integrated graphics (e.g., "Intel UHD Graphics 750")
+        'link'                     => 'nullable|string'
     ]);
 
     if($fields->fails()){

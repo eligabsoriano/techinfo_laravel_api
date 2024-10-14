@@ -12,11 +12,16 @@ class Processors extends Model
     protected $fillable = [
         'processor_name',
         'brand',
+        'description',
         'socket_type',
         'compatible_chipsets',
-        'power',
+        'cores',
+        'threads',
         'base_clock_speed',
         'max_clock_speed',
+        'tdp',
+        'cache_size_mb',
+        'integrated_graphics',
         'link'
     ];
 }
