@@ -17,7 +17,7 @@ class Processors extends Model
         'cores',
         'threads',
         'base_clock_speed',
-        'max_clock_speed',
+        'max_turbo_boost_clock_speed',
         'tdp',
         'cache_size_mb',
         'integrated_graphics',
