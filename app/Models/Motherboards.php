@@ -24,6 +24,5 @@ class Motherboards extends Model
         'has_m2_slot',
         'gpu_interface',
         'form_factor',
-        'link'
     ];
 }

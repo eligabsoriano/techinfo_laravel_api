@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('tdp');
             $table->integer('cache_size_mb');  // Cache in MB
             $table->string('integrated_graphics')->nullable();
-            $table->text('link')->nullable();
             $table->timestamps();
         });
     }

@@ -20,6 +20,5 @@ class ComputerCases extends Model
         'current_ssd_count',
         'airflow_rating',
         'max_cooler_height_mm',
-        'link'
     ];
 }

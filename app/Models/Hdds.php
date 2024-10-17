@@ -14,6 +14,5 @@ class Hdds extends Model
         'brand',
         'interface_type',
         'capacity_gb',
-        'link'
     ];
 }

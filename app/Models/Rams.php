@@ -17,6 +17,5 @@ class Rams extends Model
         'ram_speed_mhz',
         'cas_latency',
         'power_consumption',
-        'link'
     ];
 }

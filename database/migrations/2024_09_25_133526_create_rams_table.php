@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('ram_speed_mhz');    // Speed in MHz (e.g., 4000)
             $table->string('cas_latency');       // e.g., CL18
             $table->string('power_consumption'); // Power consumption in watts (   convert)
-            $table->text('link')->nullable();    // Optional link for more details
             $table->timestamps();
         });
     }

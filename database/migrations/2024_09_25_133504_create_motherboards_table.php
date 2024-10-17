@@ -27,7 +27,6 @@ return new class extends Migration
             $table->boolean('has_m2_slot');      // Add has_m2_slot
             $table->string('gpu_interface');
             $table->string('form_factor');
-            $table->text('link')->nullable();
             $table->timestamps();
         });
     }

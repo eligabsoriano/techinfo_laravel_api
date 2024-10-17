@@ -23,7 +23,6 @@ class CpuCoolersController extends Controller
             'socket_type_supported' => 'required|string',
             'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
             'tdp_rating'            => 'required|string|regex:/^\d+\s*W$/i',
-            'link'                  => 'nullable|string'
         ]);
 
         if($fields->fails()){
@@ -69,7 +68,6 @@ public function update(Request $request, $cpu_coolers)
         'socket_type_supported' => 'required|string',
         'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
         'tdp_rating'            => 'required|string|regex:/^\d+\s*W$/i',
-        'link'                  => 'nullable|string'
     ]);
 
     if($fields->fails()){

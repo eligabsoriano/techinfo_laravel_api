@@ -29,7 +29,6 @@ class ProcessorsController extends Controller
             'tdp'                      => 'required|string|regex:/^\d+\s*W$/i', // TDP (e.g., 125W)
             'cache_size_mb'            => 'required|integer',           // Cache size in MB (e.g., 16)
             'integrated_graphics'      => 'nullable|string',            // Integrated graphics (e.g., "Intel UHD Graphics 750")
-            'link'                     => 'nullable|string'
         ]);
 
         if($fields->fails()){
@@ -82,7 +81,6 @@ public function update(Request $request, $processors)
         'tdp'                      => 'required|string|regex:/^\d+\s*W$/i', // TDP (e.g., 125W)
         'cache_size_mb'            => 'required|integer',           // Cache size in MB (e.g., 16)
         'integrated_graphics'      => 'nullable|string',            // Integrated graphics (e.g., "Intel UHD Graphics 750")
-        'link'                     => 'nullable|string'
     ]);
 
     if($fields->fails()){

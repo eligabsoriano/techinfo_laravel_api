@@ -19,6 +19,5 @@ class PowerSupplyUnits extends Model
         'gpu_12_pin_connectors',
         'efficiency_rating',
         'has_required_connectors',
-        'link'
     ];
 }

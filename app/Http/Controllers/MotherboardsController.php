@@ -32,7 +32,6 @@ class MotherboardsController extends Controller
             'has_m2_slot'        => 'required|boolean',
             'gpu_interface'    => 'required|string',
             'form_factor'      => 'required|string',
-            'link'             => 'nullable|string',
         ]);
 
         if($fields->fails()){
@@ -87,7 +86,6 @@ public function update(Request $request, $motherboards)
         'has_m2_slot'        => 'required|boolean',
         'gpu_interface'    => 'required|string',
         'form_factor'      => 'required|string',
-        'link'             => 'nullable|string',
     ]);
 
     if($fields->fails()){

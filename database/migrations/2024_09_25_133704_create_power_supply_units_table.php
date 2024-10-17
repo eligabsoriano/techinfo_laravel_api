@@ -22,7 +22,6 @@ return new class extends Migration
             $table->integer('gpu_12_pin_connectors');
             $table->string('efficiency_rating');
             $table->boolean('has_required_connectors');
-            $table->text('link')->nullable();
             $table->timestamps();
         });
     }
