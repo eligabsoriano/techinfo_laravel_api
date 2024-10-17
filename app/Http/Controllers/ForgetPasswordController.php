@@ -88,8 +88,7 @@ class ForgetPasswordController extends Controller
             return response()->json(['message' => 'OTP has expired, please request a new one'], 400); // OTP expired
         }
 
-        // Update password with hashing (bcrypt)
-        $user->password = bcrypt($ValidData['password']);  // Ensure password is hashed
+        $user->password = $ValidData['password'];
         $user->save();
 
         // Delete the used token from the database

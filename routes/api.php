@@ -35,9 +35,6 @@ Route::apiResource('compatibilities', CompatibilitiesController::class);
 Route::apiResource('accounts', AccountsController::class);
 Route::apiResource('screen_resolutions', ScreenResolutionsController::class);
 
-// Route to get aggregated data
-Route::get('/aggregate', [AggregateController::class, 'index']);
-
 // Define the Bottleneck Calculator route
 Route::apiResource('bottleneck_calculators', BottleneckCalculatorsController::class);
 

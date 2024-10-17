@@ -12,7 +12,6 @@ class Processors extends Model
     protected $fillable = [
         'processor_name',
         'brand',
-        'description',
         'socket_type',
         'compatible_chipsets',
         'cores',

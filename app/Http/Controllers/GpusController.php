@@ -20,7 +20,6 @@ class GpusController extends Controller
         $fields = Validator::make($request->all(), [
             'gpu_name'               => 'required|string',            // GPU Name (e.g., RTX 4090 or RX 6600)
             'brand'                  => 'required|string',            // Brand (e.g., NVIDIA or AMD)
-            'description'            => 'required|string',
             'cuda_cores'             => 'nullable|integer',           // For NVIDIA GPUs (e.g., 16,384 CUDA cores)
             'compute_units'          => 'nullable|integer',           // For AMD GPUs (e.g., 36 Compute Units)
             'stream_processors'      => 'nullable|integer',           // For AMD GPUs (e.g., 2,304 Stream Processors)
@@ -79,7 +78,6 @@ public function update(Request $request, $gpuses)
     $fields = Validator::make($request->all(), [
         'gpu_name'               => 'required|string',            // GPU Name (e.g., RTX 4090 or RX 6600)
         'brand'                  => 'required|string',            // Brand (e.g., NVIDIA or AMD)
-        'description'            => 'required|string',
         'cuda_cores'             => 'nullable|integer',           // For NVIDIA GPUs (e.g., 16,384 CUDA cores)
         'compute_units'          => 'nullable|integer',           // For AMD GPUs (e.g., 36 Compute Units)
         'stream_processors'      => 'nullable|integer',           // For AMD GPUs (e.g., 2,304 Stream Processors)

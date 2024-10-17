@@ -20,7 +20,6 @@ class ProcessorsController extends Controller
         $fields = Validator::make($request->all(), [
             'processor_name'           => 'required|string',
             'brand'                    => 'required|string',
-            'description'              => 'required|string',
             'socket_type'              => 'required|string',
             'compatible_chipsets'      => 'nullable|string',
             'cores'                    => 'required|integer',           // Number of cores (e.g., 8)
@@ -74,7 +73,6 @@ public function update(Request $request, $processors)
     $fields = Validator::make($request->all(),[
         'processor_name'           => 'required|string',
         'brand'                    => 'required|string',
-        'description'              => 'required|string',
         'socket_type'              => 'required|string',
         'compatible_chipsets'      => 'nullable|string',
         'cores'                    => 'required|integer',           // Number of cores (e.g., 8)

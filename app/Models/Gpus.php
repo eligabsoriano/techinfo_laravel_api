@@ -12,7 +12,6 @@ class Gpus extends Model
     protected $fillable = [
         'gpu_name',
         'brand',
-        'description',
         'cuda_cores',
         'compute_units',
         'stream_processors',

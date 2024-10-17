@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('processor_id');
             $table->string('processor_name');
             $table->string('brand');
-            $table->string('description');
             $table->string('socket_type');
             $table->string('compatible_chipsets')->nullable();
             $table->integer('cores');
