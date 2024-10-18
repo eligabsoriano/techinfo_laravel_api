@@ -33,6 +33,11 @@ class CpuCoolersController extends Controller
         }
 
         $validatedData = $fields->validated();
+        if (!empty($validatedData['socket_type_supported'])) {
+            $validatedData['socket_type_supported'] = json_encode(array_map('trim', explode(',', $validatedData['socket_type_supported'])));
+        } else {
+            $validatedData['socket_type_supported'] = json_encode([]); // Ensure it's an empty JSON array if null
+        }
         $cpu_coolers = CpuCoolers::create($validatedData);
 
         return response()->json([
@@ -83,6 +88,12 @@ public function update(Request $request, $cpu_coolers)
             'status' => false,
             'message' => 'CPU Cooler data not found'
         ], 404);
+    }
+
+    if (!empty($validatedData['socket_type_supported'])) {
+        $validatedData['socket_type_supported'] = json_encode(array_map('trim', explode(',', $validatedData['socket_type_supported'])));
+    } else {
+        $validatedData['socket_type_supported'] = json_encode([]); // Ensure it's an empty JSON array if null
     }
 
     $cpu_coolers->update($fields->validated());

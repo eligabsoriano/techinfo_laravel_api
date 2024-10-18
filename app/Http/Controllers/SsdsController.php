@@ -22,7 +22,7 @@ class SsdsController extends Controller
             'ssd_name'       => 'required|string',
             'brand'          => 'required|string',
             'interface_type' => 'required|string',
-            'capacity_gb'    => 'required|integer',
+            'capacity_gb'    => 'required|string',
         ]);
 
         if($fields->fails()){
@@ -68,7 +68,7 @@ public function update(Request $request, $ssds)
         'ssd_name'       => 'required|string',
         'brand'          => 'required|string',
         'interface_type' => 'required|string',
-        'capacity_gb'    => 'required|integer',
+        'capacity_gb'    => 'required|string',
     ]);
 
     if($fields->fails()){

@@ -164,8 +164,13 @@ class CompatibilitiesCheckersController extends Controller
         // Check Case Compatibility
         $gpu_length_mm = (int) filter_var($gpu->gpu_length_mm, FILTER_SANITIZE_NUMBER_INT);
         $case_max_gpu_length_mm = (int) filter_var($case->max_gpu_length_mm, FILTER_SANITIZE_NUMBER_INT);
+
         if ($case && $motherboard && $gpu) {
-            if ($case->form_factor_supported !== $motherboard->form_factor) {
+            // Convert the case form factor to an array if it's a string
+            $supportedFormFactors = is_array($case->form_factor_supported) ? $case->form_factor_supported : [$case->form_factor_supported];
+
+            // Check motherboard form factor compatibility
+            if (!in_array($motherboard->form_factor, $supportedFormFactors)) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The case {$case->case_name} does not support the motherboard form factor {$motherboard->form_factor}.";
             }
@@ -178,11 +183,12 @@ class CompatibilitiesCheckersController extends Controller
         // Check CPU Cooler Compatibility
         if ($cooler && $processor && $case) {
             // Check if cooler supports the processor's socket type
-            $supported_sockets = array_map('trim', explode(',', $cooler->socket_type_supported));
+            $supported_sockets = json_decode($cooler->socket_type_supported, true); // Convert JSON array back to PHP array
             if (!in_array($processor->socket_type, $supported_sockets)) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The cooler {$cooler->name} is not compatible with the processor {$processor->processor_name} due to socket type mismatch. Supported sockets: " . implode(', ', $supported_sockets) . ".";
+                $feedback['issues'][] = "The cooler {$cooler->name} is not compatible with the processor {$processor->processor_name} due to socket type mismatch.";
             }
+
         // Check if the cooler fits within the case
         $cooler_max_height_mm = (int) filter_var($cooler->max_cooler_height_mm, FILTER_SANITIZE_NUMBER_INT);
         $case_max_cooler_height_mm = (int) filter_var($cooler->max_cooler_height_mm, FILTER_SANITIZE_NUMBER_INT );
@@ -210,9 +216,13 @@ class CompatibilitiesCheckersController extends Controller
 
         // Check HDD Compatibility
         if ($hdd && $motherboard) {
-            if (!$motherboard->has_sata_ports) {
+            if ($hdd->interface_type === 'M.2' && !$motherboard->has_m2_slot) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The motherboard {$motherboard->name} does not have SATA ports for the HDD {$hdd->name}.";
+                $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have an M.2 slot for the SSD {$hdd->hdd_name}.";
+            }
+            elseif ($hdd->interface_type === 'SATA' && !$motherboard->has_sata_ports) {
+                $feedback['is_compatible'] = false;
+                $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have SATA ports for the HDD {$hdd->hdd_name}.";
             }
             if ($case->max_hdd_count <= $case->current_hdd_count) {
                 $feedback['is_compatible'] = false;
@@ -222,12 +232,12 @@ class CompatibilitiesCheckersController extends Controller
 
         // Check SSD Compatibility
         if ($ssd && $motherboard) {
-            if ($ssd->type === 'M.2' && !$motherboard->has_m2_slot) {
+            if ($ssd->interface_type === 'M.2' && !$motherboard->has_m2_slot) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have an M.2 slot for the SSD {$ssd->name}.";
-            } elseif ($ssd->type === 'SATA' && !$motherboard->has_sata_ports) {
+                $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have an M.2 slot for the SSD {$ssd->ssd_name}.";
+            } elseif ($ssd->interface_type === 'SATA' && !$motherboard->has_sata_ports) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have SATA ports for the SSD {$ssd->name}.";
+                $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have SATA ports for the SSD {$ssd->ssd_name}.";
             }
             if ($case->max_ssd_count <= $case->current_ssd_count) {
                 $feedback['is_compatible'] = false;

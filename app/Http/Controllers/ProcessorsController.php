@@ -112,7 +112,6 @@ public function update(Request $request, $processors)
     }
 
     $processors->update($fields->validated());
-
     return response()->json([
         'status' => true,
         'message' => 'Processor Data Updated Successfully',

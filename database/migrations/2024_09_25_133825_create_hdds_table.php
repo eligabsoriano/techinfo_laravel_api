@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('hdd_name');
             $table->string('brand');
             $table->string('interface_type');
-            $table->integer('capacity_gb');
+            $table->string('capacity_gb');
             $table->timestamps();
         });
     }

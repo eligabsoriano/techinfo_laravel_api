@@ -38,6 +38,11 @@ class ComputerCasesController extends Controller
         }
 
         $validatedData = $fields->validated();
+        if (!empty($validatedData['form_factor_supported'])) {
+            $validatedData['form_factor_supported'] = json_encode(array_map('trim', explode(',', $validatedData['form_factor_supported'])));
+        } else {
+            $validatedData['form_factor_supported'] = json_encode([]); // Ensure it's an empty JSON array if null
+        }
         $computer_cases = ComputerCases::create($validatedData);
 
         return response()->json([
@@ -93,6 +98,12 @@ public function update(Request $request, $computer_cases)
             'status' => false,
             'message' => 'Computer Case data not found'
         ], 404);
+    }
+
+    if (!empty($validatedData['form_factor_supported'])) {
+        $validatedData['form_factor_supported'] = json_encode(array_map('trim', explode(',', $validatedData['form_factor_supported'])));
+    } else {
+        $validatedData['form_factor_supported'] = json_encode([]); // Ensure it's an empty JSON array if null
     }
 
     $computer_cases->update($fields->validated());
