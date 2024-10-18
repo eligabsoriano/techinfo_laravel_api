@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('cuda_cores')->nullable();
             $table->integer('compute_units')->nullable();
             $table->integer('stream_processors')->nullable();
+            $table->string('game_clock_ghz')->nullable();
             $table->string('base_clock_ghz');
             $table->string('boost_clock_ghz');
             $table->integer('memory_size_gb');

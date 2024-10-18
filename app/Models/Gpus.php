@@ -15,6 +15,7 @@ class Gpus extends Model
         'cuda_cores',
         'compute_units',
         'stream_processors',
+        'game_clock_ghz',
         'base_clock_ghz',
         'boost_clock_ghz',
         'memory_size_gb',

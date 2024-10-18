@@ -39,6 +39,12 @@ class ProcessorsController extends Controller
         }
 
         $validatedData = $fields->validated();
+        // Convert compatible_chipsets to an array if it's a string
+        if (!empty($validatedData['compatible_chipsets'])) {
+            $validatedData['compatible_chipsets'] = json_encode(array_map('trim', explode(',', $validatedData['compatible_chipsets'])));
+        } else {
+            $validatedData['compatible_chipsets'] = json_encode([]); // Ensure it's an empty JSON array if null
+        }
         $processors = Processors::create($validatedData);
 
         return response()->json([
@@ -96,6 +102,13 @@ public function update(Request $request, $processors)
             'status' => false,
             'message' => 'Processor data not found'
         ], 404);
+    }
+
+    // Convert compatible_chipsets to an array if it's a string
+    if (!empty($validatedData['compatible_chipsets'])) {
+        $validatedData['compatible_chipsets'] = json_encode(array_map('trim', explode(',', $validatedData['compatible_chipsets'])));
+    } else {
+        $validatedData['compatible_chipsets'] = json_encode([]); // Ensure it's an empty JSON array if null
     }
 
     $processors->update($fields->validated());
