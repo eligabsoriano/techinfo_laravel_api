@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('current_ssd_count');
             $table->string('airflow_rating');
             $table->string('max_cooler_height_mm');
+            $table->string('link');
             $table->timestamps();
         });
     }

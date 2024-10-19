@@ -29,12 +29,12 @@ class GpusController extends Controller
             'memory_size_gb'         => 'required|integer',           // Memory size (e.g., 24 GB or 6 GB)
             'memory_type'            => 'required|string',            // Memory type (e.g., GDDR6X or GDDR6)
             'memory_interface_bits'  => 'required|string|regex:/^\d+-bit$/i', // Memory Interface (e.g., 384-bit or 192-bit)
-            'tdp_wattage'            => 'required|string|regex:/^\d+\s*W$/i',  // TDP as string with 'W' (e.g., 450W or 150W)
-            'gpu_length_mm'          => 'required|string|regex:/^\d+\s*mm$/i',           // GPU length in mm
-            'required_power'         => 'required|string|regex:/^\d+\s*W$/i',           // Required PSU power
+            'tdp_wattage'            => 'required|string',  // TDP as string with 'W' (e.g., 450W or 150W)
+            'gpu_length_mm'          => 'required|string',           // GPU length in mm
+            'required_power'         => 'required|string',           // Required PSU power
             'required_6_pin_connectors' => 'required|integer',        // Required 6-pin connectors
             'required_8_pin_connectors' => 'required|integer',        // Required 8-pin connectors
-            'required_12_pin_connectors' => 'nullable|integer',       // Optional 12-pin connectors
+            'required_12_pin_connectors' => 'nullable|integer'        // Optional 12-pin connectors
         ]);
 
         if($fields->fails()){
@@ -87,9 +87,9 @@ public function update(Request $request, $gpuses)
         'memory_size_gb'         => 'required|integer',           // Memory size (e.g., 24 GB or 6 GB)
         'memory_type'            => 'required|string',            // Memory type (e.g., GDDR6X or GDDR6)
         'memory_interface_bits'  => 'required|string|regex:/^\d+-bit$/i', // Memory Interface (e.g., 384-bit or 192-bit)
-        'tdp_wattage'            => 'required|string|regex:/^\d+\s*W$/i',  // TDP as string with 'W' (e.g., 450W or 150W)
-        'gpu_length_mm'          => 'required|string|regex:/^\d+\s*mm$/i',           // GPU length in mm
-        'required_power'         => 'required|string|regex:/^\d+\s*W$/i',           // Required PSU power
+        'tdp_wattage'            => 'required|string',  // TDP as string with 'W' (e.g., 450W or 150W)
+        'gpu_length_mm'          => 'required|string',           // GPU length in mm
+        'required_power'         => 'required|string',           // Required PSU power
         'required_6_pin_connectors' => 'required|integer',        // Required 6-pin connectors
         'required_8_pin_connectors' => 'required|integer',        // Required 8-pin connectors
         'required_12_pin_connectors' => 'nullable|integer',       // Optional 12-pin connectors

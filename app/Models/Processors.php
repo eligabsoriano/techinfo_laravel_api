@@ -21,5 +21,6 @@ class Processors extends Model
         'tdp',
         'cache_size_mb',
         'integrated_graphics',
+        'link'
     ];
 }

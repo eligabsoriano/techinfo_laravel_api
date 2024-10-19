@@ -77,7 +77,7 @@ class CompatibilitiesCheckersController extends Controller
             }
 
             // Check chipset compatibility
-            if (!empty($processor->compatible_chipsets) && !in_array($motherboard->chipset, (array)$processor->compatible_chipsets)) {
+            if (!empty($processor->compatible_chipsets) && in_array($motherboard->chipset, (array)$processor->compatible_chipsets)) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The processor {$processor->processor_name} is not compatible with the motherboard {$motherboard->motherboard_name} due to chipset compatibility.";
             }
@@ -124,11 +124,11 @@ class CompatibilitiesCheckersController extends Controller
             $processor_power = (int) filter_var($processor->tdp, FILTER_SANITIZE_NUMBER_INT);
             $ram_power_consumption = (int) filter_var($ram->power_consumption, FILTER_SANITIZE_NUMBER_INT);
 
-            // Calculate total power requirements
-            $total_power = $processor_power + $total_gpu_power + $ram_power_consumption +
-                        ($hdd ? $hdd->power_consumption : 0) +
-                        ($ssd ? $ssd->power_consumption : 0) +
-                        ($cooler ? $cooler->power_consumption : 0);
+    // Calculate total power requirements
+    $total_power = $processor_power + (int) filter_var($total_gpu_power, FILTER_SANITIZE_NUMBER_INT) + $ram_power_consumption +
+                ($hdd ? (int) filter_var($hdd->power_consumption, FILTER_SANITIZE_NUMBER_INT) : 0) +
+                ($ssd ? (int) filter_var($ssd->power_consumption, FILTER_SANITIZE_NUMBER_INT) : 0) +
+                ($cooler ? (int) filter_var($cooler->power_consumption, FILTER_SANITIZE_NUMBER_INT) : 0);
 
             // PSU Efficiency Handling
             $psu_efficiency_factor = match ($psu->efficiency_rating) {
@@ -143,7 +143,7 @@ class CompatibilitiesCheckersController extends Controller
             $psu_continuous_wattage = (int) filter_var($psu->continuous_wattage, FILTER_SANITIZE_NUMBER_INT);
             if ($psu_continuous_wattage * $psu_efficiency_factor < $total_power * 1.2) {
                 $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The PSU {$psu->psu_name} does not provide enough continuous wattage with a safe margin for your selected components.";
+                $feedback['issues'][] = "The PSU {$psu->psu_name} provides only " . ($psu_continuous_wattage * $psu_efficiency_factor) . "W, which is insufficient for the total power requirement of " . ($total_power * 1.2) . "W.";
             }
 
             // PSU Connector Validation
@@ -166,14 +166,20 @@ class CompatibilitiesCheckersController extends Controller
         $case_max_gpu_length_mm = (int) filter_var($case->max_gpu_length_mm, FILTER_SANITIZE_NUMBER_INT);
 
         if ($case && $motherboard && $gpu) {
-            // Convert the case form factor to an array if it's a string
-            $supportedFormFactors = is_array($case->form_factor_supported) ? $case->form_factor_supported : [$case->form_factor_supported];
+            // Convert form factor supported to array if needed
+            $supportedFormFactors = json_decode($case->form_factor_supported, true);
+
+            if (!is_array($supportedFormFactors)) {
+                $supportedFormFactors = []; // Ensure it's an empty array if decoding fails
+            }
 
             // Check motherboard form factor compatibility
             if (!in_array($motherboard->form_factor, $supportedFormFactors)) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The case {$case->case_name} does not support the motherboard form factor {$motherboard->form_factor}.";
             }
+
+            // Check GPU length compatibility with the case
             if ($case_max_gpu_length_mm < $gpu_length_mm) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The GPU {$gpu->gpu_name} is too long for the case {$case->case_name}.";
@@ -204,14 +210,25 @@ class CompatibilitiesCheckersController extends Controller
 
         if ($cooler_tdp < $processor_tdp + $gpu_tdp) {
             $feedback['is_compatible'] = false;
-            $feedback['issues'][] = "The cooler {$cooler->cooler_name} cannot handle the combined TDP of the processor {$processor->processor_name} and GPU {$gpu->name}.";
+            $feedback['issues'][] = "The cooler {$cooler->cooler_name} (TDP: {$cooler_tdp}W) cannot handle the combined TDP of the processor {$processor->processor_name} ({$processor_tdp}W) and GPU {$gpu->gpu_name} ({$gpu_tdp}W) totaling " . ($processor_tdp + $gpu_tdp) . "W.";
         }
 
         // Case airflow compatibility
-        if ($gpu_tdp > 250 && $case->airflow_rating !== 'high') {
-            $feedback['is_compatible'] = false;
-            $feedback['issues'][] = "The GPU {$gpu->gpu_name} has a high TDP, but the case {$case->case_name} does not support sufficient airflow.";
+        if ($gpu_tdp > 250) {
+            if ($case->airflow_rating != 'high') {
+                $feedback['is_compatible'] = false;
+                $feedback['issues'][] = "The GPU {$gpu->gpu_name} has a high TDP, but the case {$case->case_name} does not support sufficient airflow.";
+            }
+        } elseif ($gpu_tdp > 200) {
+            if ($case->airflow_rating == 'low') {
+                $feedback['is_compatible'] = false;
+                $feedback['issues'][] = "The GPU {$gpu->gpu_name} requires moderate airflow, but the case {$case->case_name} has a low airflow rating.";
+            } elseif ($case->airflow_rating == 'medium') {
+                $feedback['is_compatible'] = true; // Compatible but might run hotter
+                $feedback['warnings'][] = "The GPU {$gpu->gpu_name} requires moderate airflow, and the case {$case->case_name} has medium airflow. Consider additional cooling for optimal performance.";
+            }
         }
+
 
 
         // Check HDD Compatibility
@@ -248,14 +265,14 @@ class CompatibilitiesCheckersController extends Controller
         // Add components to feedback
         $feedback['components'] = [
             'processor' => $processor->processor_name,
-            'motherboard' => $motherboard->name,
-            'ram' => $ram->name,
-            'gpu' => $gpu->name,
-            'psu' => $psu->name,
-            'case' => $case->name,
-            'cooler' => $cooler->name,
-            'hdd' => $hdd ? $hdd->name : null,
-            'ssd' => $ssd ? $ssd->name : null,
+            'motherboard' => $motherboard->motherboard_name,
+            'ram' => $ram->ram_name,
+            'gpu' => $gpu->gpu_name,
+            'psu' => $psu->psu_name,
+            'case' => $case->case_name,
+            'cooler' => $cooler->cooler_name,
+            'hdd' => $hdd ? $hdd->hdd_name : null,
+            'ssd' => $ssd ? $ssd->ssd_name : null,
         ];
 
         return $feedback;

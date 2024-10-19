@@ -90,6 +90,7 @@ public function update(Request $request, $cpu_coolers)
         ], 404);
     }
 
+    $validatedData = $fields->validated();
     if (!empty($validatedData['socket_type_supported'])) {
         $validatedData['socket_type_supported'] = json_encode(array_map('trim', explode(',', $validatedData['socket_type_supported'])));
     } else {

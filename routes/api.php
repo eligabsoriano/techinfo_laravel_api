@@ -22,10 +22,10 @@ use App\Http\Controllers\CompatibilitiesCheckersController;
 
 // Define routes for all models (CRUD routes)
 Route::apiResource('troubleshoot_articles', TroubleshootArticlesController::class);
+Route::apiResource('gpuses', GpusController::class);
 Route::apiResource('processors', ProcessorsController::class);
 Route::apiResource('motherboards', MotherboardsController::class);
 Route::apiResource('rams', RamsController::class);
-Route::apiResource('gpuses', GpusController::class);
 Route::apiResource('power_supply_units', PowerSupplyUnitsController::class);
 Route::apiResource('computer_cases', ComputerCasesController::class);
 Route::apiResource('cpu_coolers', CpuCoolersController::class);

@@ -28,6 +28,7 @@ class ComputerCasesController extends Controller
             'current_ssd_count'     => 'required|integer',
             'airflow_rating'        => 'required|string|in:low,medium,high', // Add airflow rating for TDP compatibility checks
             'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
+            'link'                  => 'required|string'
         ]);
 
         if($fields->fails()){
@@ -83,6 +84,7 @@ public function update(Request $request, $computer_cases)
         'current_ssd_count'     => 'required|integer',
         'airflow_rating'        => 'required|string|in:low,medium,high', // Add airflow rating for TDP compatibility checks
         'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
+        'link'                  => 'required|string'
     ]);
 
     if($fields->fails()){
