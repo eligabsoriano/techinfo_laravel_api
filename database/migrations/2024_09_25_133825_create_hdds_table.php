@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('brand');
             $table->string('interface_type');
             $table->string('capacity_gb');
+            $table->string('link');
             $table->timestamps();
         });
     }

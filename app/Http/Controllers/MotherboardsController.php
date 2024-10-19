@@ -33,7 +33,8 @@ class MotherboardsController extends Controller
             'gpu_interface'    => 'required|string',
             'form_factor'      => 'required|string',
             'wifi'             => 'required|string',
-            'gpu_support'      => 'required|string'
+            'gpu_support'      => 'required|string',
+            'link'                  => 'required|string'
         ]);
 
         if($fields->fails()){
@@ -89,7 +90,8 @@ public function update(Request $request, $motherboards)
         'gpu_interface'    => 'required|string',
         'form_factor'      => 'required|string',
         'wifi'             => 'required|string',
-        'gpu_support'      => 'required|string'
+        'gpu_support'      => 'required|string',
+        'link'                  => 'required|string'
     ]);
 
     if($fields->fails()){

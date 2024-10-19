@@ -25,6 +25,7 @@ class RamsController extends Controller
             'ram_speed_mhz'       => 'required|string|regex:/^\d+(\.\d+)?\s*MHz$/i',
             'cas_latency'         => 'required|string', // Format e.g., "CL18"
             'power_consumption'   => 'required|string|regex:/^\d+(\.\d+)?\s*W$/i',
+            'link'                  => 'required|string'
         ]);
 
         if($fields->fails()){
@@ -73,6 +74,7 @@ public function update(Request $request, $rams)
         'ram_speed_mhz'       => 'required|string|regex:/^\d+(\.\d+)?\s*MHz$/i',
         'cas_latency'         => 'required|string', // Format e.g., "CL18"
         'power_consumption'   => 'required|string|regex:/^\d+(\.\d+)?\s*W$/i',
+        'link'                  => 'required|string'
     ]);
 
     if($fields->fails()){

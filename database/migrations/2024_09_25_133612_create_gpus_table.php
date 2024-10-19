@@ -30,6 +30,7 @@ return new class extends Migration
             $table->integer('required_6_pin_connectors');
             $table->integer('required_8_pin_connectors');
             $table->integer('required_12_pin_connectors')->nullable();
+            $table->string('link');
             $table->timestamps();
         });
     }

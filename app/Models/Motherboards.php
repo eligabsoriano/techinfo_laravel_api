@@ -25,6 +25,7 @@ class Motherboards extends Model
         'gpu_interface',
         'form_factor',
         'wifi',
-        'gpu_support'
+        'gpu_support',
+        'link'
     ];
 }

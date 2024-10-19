@@ -22,6 +22,7 @@ class HddsController extends Controller
             'brand'          => 'required|string',
             'interface_type' => 'required|string',
             'capacity_gb'    => 'required|string',
+            'link'                  => 'required|string'
         ]);
 
         if($fields->fails()){
@@ -66,6 +67,7 @@ public function update(Request $request, $hdds)
         'brand'          => 'required|string',
         'interface_type' => 'required|string',
         'capacity_gb'    => 'required|string',
+        'link'                  => 'required|string'
     ]);
 
     if($fields->fails()){

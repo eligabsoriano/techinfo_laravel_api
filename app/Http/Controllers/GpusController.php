@@ -34,7 +34,8 @@ class GpusController extends Controller
             'required_power'         => 'required|string',           // Required PSU power
             'required_6_pin_connectors' => 'required|integer',        // Required 6-pin connectors
             'required_8_pin_connectors' => 'required|integer',        // Required 8-pin connectors
-            'required_12_pin_connectors' => 'nullable|integer'        // Optional 12-pin connectors
+            'required_12_pin_connectors' => 'nullable|integer',        // Optional 12-pin connectors
+            'link'                  => 'required|string'
         ]);
 
         if($fields->fails()){
@@ -93,6 +94,7 @@ public function update(Request $request, $gpuses)
         'required_6_pin_connectors' => 'required|integer',        // Required 6-pin connectors
         'required_8_pin_connectors' => 'required|integer',        // Required 8-pin connectors
         'required_12_pin_connectors' => 'nullable|integer',       // Optional 12-pin connectors
+        'link'                  => 'required|string'
     ]);
 
     if($fields->fails()){

@@ -26,6 +26,7 @@ class Gpus extends Model
         'required_power',
         'required_6_pin_connectors',
         'required_8_pin_connectors',
-        'required_12_pin_connectors'
+        'required_12_pin_connectors',
+        'link'
     ];
 }

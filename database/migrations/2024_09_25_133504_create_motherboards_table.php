@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('form_factor');
             $table->string('wifi');
             $table->string('gpu_support');
+            $table->string('link');
             $table->timestamps();
         });
     }

@@ -27,6 +27,7 @@ class PowerSupplyUnitsController extends Controller
             'gpu_6_pin_connectors'   => 'required|integer', //
             'gpu_8_pin_connectors'   => 'required|integer', //
             'gpu_12_pin_connectors'  => 'nullable|integer',  // High-end GPUs may need 12-pin connectors
+            'link'                  => 'required|string'
         ]);
 
         if($fields->fails()){
@@ -76,6 +77,7 @@ public function update(Request $request, $power_supply_units)
         'gpu_6_pin_connectors'   => 'required|integer', //
         'gpu_8_pin_connectors'   => 'required|integer', //
         'gpu_12_pin_connectors'  => 'nullable|integer',  // High-end GPUs may need 12-pin connectors
+        'link'                  => 'required|string'
     ]);
 
     if($fields->fails()){

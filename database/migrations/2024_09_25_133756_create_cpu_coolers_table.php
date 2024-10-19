@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('socket_type_supported');
             $table->string('max_cooler_height_mm');
             $table->string('tdp_rating');
+            $table->string('link');
             $table->timestamps();
         });
     }
