@@ -31,7 +31,7 @@ Route::apiResource('computer_cases', ComputerCasesController::class);
 Route::apiResource('cpu_coolers', CpuCoolersController::class);
 Route::apiResource('hdds', HddsController::class);
 Route::apiResource('ssds', SsdsController::class);
-Route::apiResource('compatibilities', CompatibilitiesController::class);
+// Route::apiResource('compatibilities', CompatibilitiesController::class);
 Route::apiResource('accounts', AccountsController::class);
 Route::apiResource('screen_resolutions', ScreenResolutionsController::class);
 

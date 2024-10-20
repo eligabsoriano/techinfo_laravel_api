@@ -27,15 +27,15 @@ class CompatibilitiesCheckersController extends Controller
     {
         // Validate incoming request with required component IDs
         $validatedData = $request->validate([
-            'processor_id'   => 'required|exists:processors,processor_id',
-            'motherboard_id' => 'required|exists:motherboards,motherboard_id',
-            'ram_id'         => 'required|exists:rams,ram_id',
-            'gpu_id'         => 'required|exists:gpuses,gpu_id',
-            'psu_id'         => 'required|exists:power_supply_units,psu_id',
-            'case_id'        => 'required|exists:computer_cases,case_id',
-            'cooler_id'      => 'required|exists:cpu_coolers,cooler_id',
-            'hdd_id'         => 'nullable|exists:hdds,hdd_id',
-            'ssd_id'         => 'nullable|exists:ssds,ssd_id',
+            'processor_name'   => 'required|string',
+            'motherboard_name' => 'required|string',
+            'ram_name'         => 'required|string',
+            'gpu_name'         => 'required|string',
+            'psu_name'         => 'required|string',
+            'case_name'        => 'required|string',
+            'cooler_name'      => 'required|string',
+            'hdd_name'         => 'nullable|string',
+            'ssd_name'         => 'nullable|string',
         ]);
 
         // Get compatibility data
@@ -56,18 +56,18 @@ class CompatibilitiesCheckersController extends Controller
             'components' => []
         ];
 
-        // Fetch models based on provided IDs
-        $motherboard = Motherboards::find($components['motherboard_id']);
-        $processor = Processors::find($components['processor_id']);
-        $ram = Rams::find($components['ram_id']);
-        $gpu = Gpus::find($components['gpu_id']);
-        $psu = PowerSupplyUnits::find($components['psu_id']);
-        $case = ComputerCases::find($components['case_id']);
-        $cooler = CpuCoolers::find($components['cooler_id']);
+        // Fetch models based on provided names
+        $motherboard = Motherboards::where('motherboard_name', $components['motherboard_name'])->first();
+        $processor = Processors::where('processor_name', $components['processor_name'])->first();
+        $ram = Rams::where('ram_name', $components['ram_name'])->first();
+        $gpu = Gpus::where('gpu_name', $components['gpu_name'])->first();
+        $psu = PowerSupplyUnits::where('psu_name', $components['psu_name'])->first();
+        $case = ComputerCases::where('case_name', $components['case_name'])->first();
+        $cooler = CpuCoolers::where('cooler_name', $components['cooler_name'])->first();
 
         // Optional components
-        $hdd = isset($components['hdd_id']) ? Hdds::find($components['hdd_id']) : null;
-        $ssd = isset($components['ssd_id']) ? Ssds::find($components['ssd_id']) : null;
+        $hdd = isset($components['hdd_name']) ? Hdds::where('hdd_name', $components['hdd_name'])->first() : null;
+        $ssd = isset($components['ssd_name']) ? Ssds::where('ssd_name', $components['ssd_name'])->first() : null;
 
         // Check Processor and Motherboard Compatibility
         if ($processor && $motherboard) {
