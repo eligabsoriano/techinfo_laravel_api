@@ -36,7 +36,8 @@ Route::apiResource('accounts', AccountsController::class);
 Route::apiResource('screen_resolutions', ScreenResolutionsController::class);
 
 // Define the Bottleneck Calculator route
-Route::apiResource('bottleneck_calculators', BottleneckCalculatorsController::class);
+Route::get('/bottlenecks', [BottleneckCalculatorsController::class, 'index']); // For fetching all data
+Route::post('/bottleneck', [BottleneckCalculatorsController::class, 'calculateBottleneck']);
 
 // Compatibility checker route
 Route::get('compatibility_checker', [CompatibilitiesCheckersController::class, 'check']);

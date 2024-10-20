@@ -64,7 +64,7 @@ class AccountsController extends Controller
     {
         $fields = Validator::make($request->all(), [
             'username' => 'required|string',
-            "email" => 'required|email|unique:accounts,email' . $id,
+            "email" => 'required|email|unique:accounts,email,' . $id,
             'password' => 'required|min:8|string',
         ]);
 
