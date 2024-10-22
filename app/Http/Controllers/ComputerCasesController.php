@@ -26,24 +26,26 @@ class ComputerCasesController extends Controller
             'max_ssd_count'         => 'required|integer',
             'current_hdd_count'     => 'required|integer',
             'current_ssd_count'     => 'required|integer',
-            'airflow_rating'        => 'required|string|in:low,medium,high', // Add airflow rating for TDP compatibility checks
+            'airflow_rating'        => 'required|string|in:low,medium,high',
             'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
             'link'                  => 'required|string'
         ]);
 
-        if($fields->fails()){
+        if ($fields->fails()) {
             return response()->json([
-                'message'=>'All fields are mandatory',
-                'error'=>$fields->errors()
+                'message' => 'All fields are mandatory',
+                'error' => $fields->errors()
             ], 422);
         }
 
+        // Process validated data
         $validatedData = $fields->validated();
         if (!empty($validatedData['form_factor_supported'])) {
             $validatedData['form_factor_supported'] = json_encode(array_map('trim', explode(',', $validatedData['form_factor_supported'])));
         } else {
             $validatedData['form_factor_supported'] = json_encode([]); // Ensure it's an empty JSON array if null
         }
+        // Create computer case
         $computer_cases = ComputerCases::create($validatedData);
 
         return response()->json([
@@ -82,33 +84,27 @@ public function update(Request $request, $computer_cases)
         'max_ssd_count'         => 'required|integer',
         'current_hdd_count'     => 'required|integer',
         'current_ssd_count'     => 'required|integer',
-        'airflow_rating'        => 'required|string|in:low,medium,high', // Add airflow rating for TDP compatibility checks
+        'airflow_rating'        => 'required|string|in:low,medium,high',
         'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
         'link'                  => 'required|string'
     ]);
 
-    if($fields->fails()){
+    if ($fields->fails()) {
         return response()->json([
-            'message'=>'All fields are mandatory',
-            'error'=>$fields->errors()
+            'message' => 'All fields are mandatory',
+            'error' => $fields->errors()
         ], 422);
     }
 
-    $computer_cases = ComputerCases::find($computer_cases);
-    if (!$computer_cases) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Computer Case data not found'
-        ], 404);
-    }
-
+    // Process validated data
+    $validatedData = $fields->validated();
     if (!empty($validatedData['form_factor_supported'])) {
         $validatedData['form_factor_supported'] = json_encode(array_map('trim', explode(',', $validatedData['form_factor_supported'])));
     } else {
         $validatedData['form_factor_supported'] = json_encode([]); // Ensure it's an empty JSON array if null
     }
-
-    $computer_cases->update($fields->validated());
+    // Create computer case
+    $computer_cases = ComputerCases::create($validatedData);
     return response()->json([
         'status' => true,
         'message' => 'Computer Case Data Updated Successfully',

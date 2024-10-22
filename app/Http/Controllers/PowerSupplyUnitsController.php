@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PowerSupplyUnits;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PowerSupplyUnitsController extends Controller
@@ -11,7 +12,10 @@ class PowerSupplyUnitsController extends Controller
     // Get request
     public function index()
     {
-       return PowerSupplyUnits::all();
+        return PowerSupplyUnits::all()->map(function($power_supply_units) {
+            $power_supply_units->performance_score = $this->calculatePsuPerformance($power_supply_units);
+            return $power_supply_units;
+        });
     }
 
     // Post for creating
@@ -57,10 +61,14 @@ class PowerSupplyUnitsController extends Controller
                 'message' => 'Power Supply Unit data not found'
             ], 404);
         }
+
+        $performanceScore = $this->calculatePsuPerformance($power_supply_units);
+
         return response()->json([
             'status' => true,
             'message' => 'Power Supply Unit data found successfully',
-            'data' => $power_supply_units
+            'data' => $power_supply_units,
+            'performance_score' => $performanceScore
         ], 200);
     }
 
@@ -121,4 +129,27 @@ public function update(Request $request, $power_supply_units)
             'data' => $power_supply_units
         ], 200);
     }
+    private function calculatePsuPerformance($power_supply_units): float
+    {
+        // Step 1: Get the highest wattage from the database and convert it to a float
+        $database_max_wattage = (float) DB::table('power_supply_units')
+            ->select(DB::raw('MAX(CAST(SUBSTRING(wattage, 1, LENGTH(wattage) - 1) AS DECIMAL(10,2))) AS max_wattage'))
+            ->value('max_wattage');
+
+        // Debugging: Log the maximum wattage
+        \Log::info('Database Max Wattage: ' . $database_max_wattage);
+
+        // Step 2: Sanitize and extract the current wattage of the power supply unit
+        $wattage = (float) filter_var(trim($power_supply_units->wattage), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION); // e.g., "750W"
+
+        // Step 3: Calculate the performance score as a ratio between the PSU's wattage and the highest wattage
+        $performanceScore = ($wattage / $database_max_wattage) * 100;
+
+        // Step 4: Define a maximum score threshold (optional)
+        $maxPerformanceScore = 100; // Normalized to 100%
+
+        // Step 5: Normalize the score and ensure it doesn't exceed 100%
+        return round(min($performanceScore, $maxPerformanceScore)); // Return the percentage score
+    }
+
 }

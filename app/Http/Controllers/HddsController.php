@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hdds;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class HddsController extends Controller
@@ -11,7 +12,10 @@ class HddsController extends Controller
     // Get request
     public function index()
     {
-       return Hdds::all();
+        return Hdds::all()->map(function($hdds) {
+            $hdds->performance_score = $this->calculateHddPerformance($hdds);
+            return $hdds;
+        });
     }
 
     // Post for creating
@@ -52,10 +56,14 @@ class HddsController extends Controller
                 'message' => 'HDD data not found'
             ], 404);
         }
+
+        $performanceScore = $this->calculateHddPerformance($hdds);
+
         return response()->json([
             'status' => true,
             'message' => 'HDD data found successfully',
-            'data' => $hdds
+            'data' => $hdds,
+            'performance_score' => $performanceScore
         ], 200);
     }
 
@@ -110,4 +118,34 @@ public function update(Request $request, $hdds)
             'data' => $hdds
         ], 200);
     }
+
+    private function calculateHddPerformance($hdds): float
+    {
+        // Step 1: Get the highest HDD capacity from the database and convert it to a float
+        $database_max_capacity = (float) DB::table('hdds')
+            ->select(DB::raw('MAX(CAST(SUBSTRING(capacity_gb, 1, LENGTH(capacity_gb) - 2) AS DECIMAL(10,2))) AS max_capacity'))
+            ->value('max_capacity');
+
+        // Debugging: Log the maximum HDD capacity
+        \Log::info('Database Max HDD Capacity: ' . $database_max_capacity);
+
+        // Step 2: Sanitize and extract relevant data for the current HDD
+        $capacity = (float) filter_var(trim($hdds->capacity_gb), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+
+        if ($database_max_capacity > 0) {
+            $performanceScore = ($capacity / $database_max_capacity) * 100;
+        } else {
+            $performanceScore = 0; // Handle the case where the max capacity is zero
+        }
+
+                // Step 4: Define a maximum score threshold if needed (optional)
+                $maxPerformanceScore = 100; // Normalized to 100%
+
+                // Step 5: Normalize the score and ensure it doesn't exceed 100%
+                return round(min($performanceScore, $maxPerformanceScore)); // Return the percentage score
+
+    }
+
+
 }

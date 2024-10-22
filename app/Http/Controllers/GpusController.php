@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Gpus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class GpusController extends Controller
@@ -11,7 +12,10 @@ class GpusController extends Controller
     // Get request
     public function index()
     {
-       return Gpus::all();
+        return Gpus::all()->map(function($gpuses) {
+            $gpuses->performance_score = $this->calculateGpuPerformance($gpuses);
+            return $gpuses;
+        });
     }
 
     // Post for creating
@@ -65,10 +69,14 @@ class GpusController extends Controller
                 'message' => 'GPU data not found'
             ], 404);
         }
+
+        $performanceScore = $this->calculateGpuPerformance($gpuses);
+
         return response()->json([
             'status' => true,
             'message' => 'GPU data found successfully',
-            'data' => $gpuses
+            'data' => $gpuses,
+            'performance_score' => $performanceScore
         ], 200);
     }
 
@@ -135,4 +143,25 @@ public function update(Request $request, $gpuses)
             'data' => $gpuses
         ], 200);
     }
+
+    private function calculateGpuPerformance($gpuses): float
+    {
+        // Extract GPU specs
+        $database_max_boost_clock = (float) DB::table('gpuses')
+        ->select(DB::raw('MAX(CAST(SUBSTRING(boost_clock_ghz, 1, LENGTH(boost_clock_ghz) - 4) AS DECIMAL(5,2))) AS max_speed'))
+        ->value('max_speed');
+
+        // Step 2: Convert the current GPU's boost clock speed to a float
+        $boostClock = (float) filter_var($gpuses->boost_clock_ghz, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+        // Step 3: Calculate the performance score as a ratio between the GPU's clock speed and the highest clock speed
+        $performanceScore = ($boostClock / $database_max_boost_clock) * 100;
+
+        // Step 4: Define a maximum score threshold if needed (optional)
+        $maxPerformanceScore = 100; // Normalized to 100%
+
+        // Step 5: Normalize the score, ensure it doesn't exceed 100%, and round the result
+        return round(min($performanceScore, $maxPerformanceScore)); // Rounded to the nearest whole number
+    }
+
 }

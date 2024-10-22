@@ -8,8 +8,10 @@ use App\Http\Controllers\RamsController;
 use App\Http\Controllers\SsdsController;
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\AggregateController;
+use App\Http\Controllers\PcCompareController;
 use App\Http\Controllers\CpuCoolersController;
 use App\Http\Controllers\ProcessorsController;
+use App\Http\Controllers\GuestAccountController;
 use App\Http\Controllers\MotherboardsController;
 use App\Http\Controllers\ComputerCasesController;
 use App\Http\Controllers\ForgetPasswordController;
@@ -49,6 +51,13 @@ Route::get('/aggregate/{modelType}', [AggregateController::class, 'getModelData'
 Route::post('admin/request-reset', [ForgetPasswordController::class, 'requestReset']);
 Route::post('admin/reset-password', [ForgetPasswordController::class, 'resetPassword']);
 
+Route::post('pc_compare', [PcCompareController::class, 'pcCompare']);
+Route::get('components', [PcCompareController::class, 'index']);
+
+
+Route::get('/create-guest-account', [GuestAccountController::class, 'createGuestAccount']);
+// Route to create a build for a guest account
+Route::post('/guest/create-build', [GuestAccountController::class, 'createGuestBuild']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

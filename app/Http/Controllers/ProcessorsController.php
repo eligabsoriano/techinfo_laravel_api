@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Processors;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProcessorsController extends Controller
@@ -11,7 +12,10 @@ class ProcessorsController extends Controller
     // Get request
     public function index()
     {
-       return Processors::all();
+        return Processors::all()->map(function($processor) {
+            $processor->performance_score = $this->calculateProcessorPerformance($processor);
+            return $processor;
+        });
     }
 
     // Post for creating
@@ -66,10 +70,13 @@ class ProcessorsController extends Controller
             ], 404);
         }
 
+        $performanceScore = $this->calculateProcessorPerformance($processors);
+
         return response()->json([
             'status' => true,
             'message' => 'Processors data found successfully',
-            'data' => $processors
+            'data' => $processors,
+            'performance_score' => $performanceScore
         ], 200);
     }
 
@@ -137,4 +144,26 @@ public function update(Request $request, $processors)
             'data' => $processors
         ], 200);
     }
+
+// Calculate processor performance
+private function calculateProcessorPerformance($processor): float
+{
+    // Step 1: Get the highest turbo boost clock speed from the database and convert it to a float
+    $database_max_turbo_clock_speed = (float) DB::table('processors')
+        ->select(DB::raw('MAX(CAST(SUBSTRING(max_turbo_boost_clock_speed, 1, LENGTH(max_turbo_boost_clock_speed) - 4) AS DECIMAL(5,2))) AS max_speed'))
+        ->value('max_speed');
+
+    // Step 2: Convert the processor's own turbo boost clock speed to a float
+    $maxTurboBoostClockSpeed = (float) filter_var($processor->max_turbo_boost_clock_speed, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+    // Step 3: Calculate the performance score as a ratio between the processor's clock speed and the highest clock speed
+    $performanceScore = ($maxTurboBoostClockSpeed / $database_max_turbo_clock_speed) * 100;
+
+    // Step 4: Define a maximum score threshold if needed (optional)
+    $maxPerformanceScore = 100; // Normalized to 100%
+
+    // Step 5: Normalize the score and ensure it doesn't exceed 100%
+    return round(min($performanceScore, $maxPerformanceScore)); // Return the percentage score
+    }
+
 }
