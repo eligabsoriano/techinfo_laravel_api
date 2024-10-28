@@ -200,15 +200,19 @@ class CompatibilitiesCheckersController extends Controller
             }
 
             // PSU Connector Validation
-            if ($gpu->required_6_pin_connectors > $psu->gpu_6_pin_connectors) {
+            $required_6_pin_connectors = (int) filter_var($gpu->required_6_pin_connectors, FILTER_SANITIZE_NUMBER_INT);
+            $required_8_pin_connectors = (int) filter_var($gpu->required_8_pin_connectors, FILTER_SANITIZE_NUMBER_INT);
+            $required_12_pin_connectors = (int) filter_var($gpu->required_12_pin_connectors, FILTER_SANITIZE_NUMBER_INT);
+
+            if ($required_6_pin_connectors > $psu->gpu_6_pin_connectors) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The PSU {$psu->psu_name} does not have enough 6-pin connectors for the GPU {$gpu->gpu_name}.";
             }
-            if ($gpu->required_8_pin_connectors > $psu->gpu_8_pin_connectors) {
+            if ($required_8_pin_connectors > $psu->gpu_8_pin_connectors) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The PSU {$psu->psu_name} does not have enough 8-pin connectors for the GPU {$gpu->gpu_name}.";
             }
-            if (!empty($gpu->required_12_pin_connectors) && $gpu->required_12_pin_connectors > $psu->gpu_12_pin_connectors) {
+            if (!empty($required_12_pin_connectors) && $required_12_pin_connectors > $psu->gpu_12_pin_connectors) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The PSU {$psu->psu_name} does not have enough 12-pin connectors for the GPU {$gpu->gpu_name}.";
             }
