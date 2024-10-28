@@ -22,11 +22,10 @@ class ComputerCasesController extends Controller
             'brand'                 => 'required|string',
             'form_factor_supported' => 'required|string',
             'max_gpu_length_mm'     => 'required|string|regex:/^\d+\s*mm$/i',
-            'max_hdd_count'         => 'required|integer',
-            'max_ssd_count'         => 'required|integer',
-            'current_hdd_count'     => 'required|integer',
-            'current_ssd_count'     => 'required|integer',
-            'airflow_rating'        => 'required|string|in:low,medium,high',
+            'max_hdd_count'         => 'required|string',
+            'max_ssd_count'         => 'required|string',
+            'current_hdd_count'     => 'required|string',
+            'current_ssd_count'     => 'required|string',
             'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
             'link'                  => 'required|string'
         ]);
@@ -88,11 +87,10 @@ class ComputerCasesController extends Controller
                 'brand'                 => 'required|string',
                 'form_factor_supported' => 'required|string',
                 'max_gpu_length_mm'     => 'required|string|regex:/^\d+\s*mm$/i',
-                'max_hdd_count'         => 'required|integer',
-                'max_ssd_count'         => 'required|integer',
-                'current_hdd_count'     => 'required|integer',
-                'current_ssd_count'     => 'required|integer',
-                'airflow_rating'        => 'required|string|in:low,medium,high',
+                'max_hdd_count'         => 'required|string',
+                'max_ssd_count'         => 'required|string',
+                'current_hdd_count'     => 'required|string',
+                'current_ssd_count'     => 'required|string',
                 'max_cooler_height_mm'  => 'required|string|regex:/^\d+\s*mm$/i',
                 'link'                  => 'required|string'
             ]);

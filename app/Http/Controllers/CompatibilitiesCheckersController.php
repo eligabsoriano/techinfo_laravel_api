@@ -267,6 +267,9 @@ class CompatibilitiesCheckersController extends Controller
         }
 
         // Check HDD Compatibility
+        $max_hdd_count = (int) $case->max_hdd_count;
+        $current_hdd_count = (int) $case->current_hdd_count;
+
         if ($hdd && $motherboard) {
             if ($hdd->interface_type === 'M.2' && !$motherboard->has_m2_slot) {
                 $feedback['is_compatible'] = false;
@@ -276,13 +279,16 @@ class CompatibilitiesCheckersController extends Controller
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have SATA ports for the HDD {$hdd->hdd_name}.";
             }
-            if ($case->max_hdd_count <= $case->current_hdd_count) {
+            if ($max_hdd_count <= $current_hdd_count) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The case {$case->case_name} cannot accommodate more HDDs.";
             }
         }
 
         // Check SSD Compatibility
+        $max_ssd_count = (int) $case->max_ssd_count;
+        $current_ssd_count = (int) $case->current_ssd_count;
+
         if ($ssd && $motherboard) {
             if ($ssd->interface_type === 'M.2' && !$motherboard->has_m2_slot) {
                 $feedback['is_compatible'] = false;
@@ -291,7 +297,7 @@ class CompatibilitiesCheckersController extends Controller
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The motherboard {$motherboard->motherboard_name} does not have SATA ports for the SSD {$ssd->ssd_name}.";
             }
-            if ($case->max_ssd_count <= $case->current_ssd_count) {
+            if ($max_ssd_count <= $current_ssd_count) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The case {$case->case_name} cannot accommodate more SSDs.";
             }

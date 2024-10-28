@@ -17,11 +17,10 @@ return new class extends Migration
             $table->string('brand');
             $table->string('form_factor_supported');
             $table->string('max_gpu_length_mm');
-            $table->integer('max_hdd_count');
-            $table->integer('max_ssd_count');
-            $table->integer('current_hdd_count');
-            $table->integer('current_ssd_count');
-            $table->string('airflow_rating');
+            $table->string('max_hdd_count');
+            $table->string('max_ssd_count');
+            $table->string('current_hdd_count');
+            $table->string('current_ssd_count');
             $table->string('max_cooler_height_mm');
             $table->string('link');
             $table->timestamps();
