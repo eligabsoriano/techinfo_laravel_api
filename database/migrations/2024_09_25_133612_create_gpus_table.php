@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id('gpu_id');
             $table->string('gpu_name');
             $table->string('brand');
-            $table->integer('cuda_cores')->nullable();
-            $table->integer('compute_units')->nullable();
-            $table->integer('stream_processors')->nullable();
+            $table->string('cuda_cores')->nullable();
+            $table->string('compute_units')->nullable();
+            $table->string('stream_processors')->nullable();
             $table->string('game_clock_ghz')->nullable();
             $table->string('base_clock_ghz');
             $table->string('boost_clock_ghz');

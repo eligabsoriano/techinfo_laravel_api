@@ -24,9 +24,9 @@ class GpusController extends Controller
         $fields = Validator::make($request->all(), [
             'gpu_name'               => 'required|string',            // GPU Name (e.g., RTX 4090 or RX 6600)
             'brand'                  => 'required|string',            // Brand (e.g., NVIDIA or AMD)
-            'cuda_cores'             => 'nullable|integer',           // For NVIDIA GPUs (e.g., 16,384 CUDA cores)
-            'compute_units'          => 'nullable|integer',           // For AMD GPUs (e.g., 36 Compute Units)
-            'stream_processors'      => 'nullable|integer',           // For AMD GPUs (e.g., 2,304 Stream Processors)
+            'cuda_cores'             => 'nullable|string',           // For NVIDIA GPUs (e.g., 16,384 CUDA cores)
+            'compute_units'          => 'nullable|string',           // For AMD GPUs (e.g., 36 Compute Units)
+            'stream_processors'      => 'nullable|string',           // For AMD GPUs (e.g., 2,304 Stream Processors)
             'game_clock_ghz'         => 'nullable|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // new
             'base_clock_ghz'         => 'nullable|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Base clock (e.g., "2.23 GHz")
             'boost_clock_ghz'        => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Boost clock (e.g., "1.37 GHz")
@@ -87,9 +87,9 @@ public function update(Request $request, $gpuses)
     $fields = Validator::make($request->all(), [
         'gpu_name'               => 'required|string',            // GPU Name (e.g., RTX 4090 or RX 6600)
         'brand'                  => 'required|string',            // Brand (e.g., NVIDIA or AMD)
-        'cuda_cores'             => 'nullable|integer',           // For NVIDIA GPUs (e.g., 16,384 CUDA cores)
-        'compute_units'          => 'nullable|integer',           // For AMD GPUs (e.g., 36 Compute Units)
-        'stream_processors'      => 'nullable|integer',           // For AMD GPUs (e.g., 2,304 Stream Processors)
+        'cuda_cores'             => 'nullable|string',           // For NVIDIA GPUs (e.g., 16,384 CUDA cores)
+        'compute_units'          => 'nullable|string',           // For AMD GPUs (e.g., 36 Compute Units)
+        'stream_processors'      => 'nullable|string',           // For AMD GPUs (e.g., 2,304 Stream Processors)
         'game_clock_ghz'         => 'nullable|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // new
         'base_clock_ghz'         => 'nullable|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Base clock (e.g., "2.23 GHz")
         'boost_clock_ghz'        => 'required|string|regex:/^\d+(\.\d+)?\s*GHz$/i', // Boost clock (e.g., "1.37 GHz")
