@@ -44,22 +44,9 @@ Route::post('/bottleneck', [BottleneckCalculatorsController::class, 'calculateBo
 // Compatibility checker route
 Route::get('compatibility_checker', [CompatibilitiesCheckersController::class, 'check']);
 
-// Route to get data for a specific model type, handled by AggregateController
-Route::get('/aggregate/{modelType}', [AggregateController::class, 'getModelData']);
-
-// Routes for the forget password system
-Route::post('admin/request-reset', [ForgetPasswordController::class, 'requestReset']);
-Route::post('admin/reset-password', [ForgetPasswordController::class, 'resetPassword']);
-
 Route::post('pc_compare', [PcCompareController::class, 'pcCompare']);
 Route::get('components', [PcCompareController::class, 'index']);
 
-
-Route::get('/create-guest-account', [GuestAccountController::class, 'createGuestAccount']);
-// Route to create a build for a guest account
-Route::post('/guest/create-build', [GuestAccountController::class, 'createGuestBuild']);
-
-Route::apiResource('aggregate', AggregateController::class);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

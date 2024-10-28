@@ -78,7 +78,7 @@ public function update(Request $request, $rams)
         'brand'               => 'required|string',
         'ram_type'            => 'required|string',
         'ram_capacity_gb'     => 'required|string|regex:/^\d+(\.\d+)?\s*GB$/i',
-        'ram_speed_mhz' => 'required|string|regex:/^\d+(\.\d+)?\s*MHz$/i',
+        'ram_speed_mhz'       => 'required|string|regex:/^\d+(\.\d+)?\s*MHz$/i',
         'cas_latency'         => 'required|string', // Format e.g., "CL18"
         'power_consumption'   => 'required|string|regex:/^\d+(\.\d+)?\s*W$/i',
         'link'                  => 'required|string'

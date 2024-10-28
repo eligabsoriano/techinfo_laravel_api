@@ -59,7 +59,6 @@ class BottleneckCalculatorsController extends Controller
                 'Ultra Wide QHD' => 0.8,      // 3440 x 1440
                 'Ultra Wide Full HD' => 0.9,  // 2560 x 1080
                 '5K' => 0.65,                 // 5120 x 2880
-                '8K' => 0.55,                 // 7680 x 4320
                 '720p HD' => 1.1,             // 1280 x 720
             ];
 
@@ -70,10 +69,10 @@ class BottleneckCalculatorsController extends Controller
             $threads = (int)$processor->threads;
             $baseClockSpeed = (float)$processor->base_clock_speed; // in GHz
             $maxTurboBoostClockSpeed = (float)$processor->max_turbo_boost_clock_speed; // in GHz
-            $cacheSizeMb = (float)$processor->cache_size_mb;
+            $cacheSizeMb = (int)$processor->cache_size_mb;
 
-            $memorySizeGb = (float)$gpu->memory_size_gb;
-            $boostClockGhz = (float)$gpu->boost_clock_ghz; // in GHz
+            $memorySizeGb = (int) filter_var($gpu->memory_size_gb, FILTER_SANITIZE_NUMBER_INT);
+            $boostClockGhz = (float) filter_var($gpu->boost_clock_ghz, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION); // in GHz
 
             // Calculate CPU score with adjusted weights
             $cpuScore = ($cores * 15) + ($threads * 8) + ($baseClockSpeed * 15) + ($maxTurboBoostClockSpeed * 20) + ($cacheSizeMb * 4);
