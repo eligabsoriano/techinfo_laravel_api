@@ -8,15 +8,25 @@ use App\Models\Accounts;
 use Illuminate\Http\Request;
 use App\Models\ForgetPassword;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class ForgetPasswordController extends Controller
 {
     // Step 1: Request for OTP and Token
     public function requestReset(Request $request)
     {
-        $ValidateData = $request->validate([
-            'email' => 'required|email|string',
-        ]);
+        try {
+            $ValidateData = $request->validate([
+                'email' => 'required|email|string',
+            ], [
+                'email.required' => 'The email field is required.',
+                'email.email' => 'Please enter a valid email address.',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'errors' => $e->errors()
+            ], 422); // Return 422 Unprocessable Entity for validation errors
+        }
 
         $user = Accounts::where('email', $request->email)->first();
 
@@ -24,28 +34,27 @@ class ForgetPasswordController extends Controller
             return response()->json(['message' => 'No record found, try a different email'], 404);
         }
 
-        // Generate a 4-digit random token to reset the password
-        $resetPasswordOtp = str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT); // Ensure a 4-digit OTP
+        // Generate a 4-digit random OTP
+        $resetPasswordOtp = str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
 
         // Check if the user already requested a password reset
         $userPassReset = ForgetPassword::where('email', $user->email)->first();
 
         if (!$userPassReset) {
-            // Create a new reset token with a timestamp
             ForgetPassword::create([
                 'email' => $user->email,
                 'token' => $resetPasswordOtp,
-                'created_at' => Carbon::now(), // Store the current timestamp
+                'created_at' => Carbon::now(),
             ]);
         } else {
-            // Update the reset token with a new timestamp
-            ForgetPassword::where('email', $user->email)->update([
+            // Update token and timestamp if a reset request exists
+            $userPassReset->update([
                 'token' => $resetPasswordOtp,
-                'created_at' => Carbon::now(), // Update the timestamp
+                'created_at' => Carbon::now(),
             ]);
         }
 
-        // Send OTP and Token to email
+        // Send OTP to user's email
         Mail::to($user->email)->send(new ResetPass($resetPasswordOtp));
 
         return response()->json([
@@ -56,46 +65,54 @@ class ForgetPasswordController extends Controller
     // Step 2: Reset Password
     public function resetPassword(Request $request)
     {
-        $ValidData = $request->validate([
-            'email' => 'required|email|string',
-            'token' => 'required|string', // Ensure it's string to match OTP format
-            'password' => 'required|string|min:8' // Ensure password is at least 8 characters
-        ]);
+        try {
+            $ValidData = $request->validate([
+                'email' => 'required|email|string',
+                'token' => 'required|string',
+                'password' => 'required|string|min:8',
+            ], [
+                'email.required' => 'The email field is required.',
+                'email.email' => 'Please enter a valid email address.',
+                'token.required' => 'The OTP is required.',
+                'password.required' => 'The password field is required.',
+                'password.min' => 'The password must be at least 8 characters.',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'errors' => $e->errors()
+            ], 422);
+        }
 
         // Find the user by email
         $user = Accounts::where('email', $ValidData['email'])->first();
 
-         if (!$user) {
-            return response()->json(['message' => 'No Record Found, Try another email']);
+        if (!$user) {
+            return response()->json(['message' => 'No record found, try another email'], 404);
         }
 
-         // Find the reset request by email
+        // Find the reset request by email
         $resetRequest = ForgetPassword::where('email', $user->email)->first();
 
         // Check if the reset request exists and if the token matches
-        if (!$resetRequest || $resetRequest->token != $request->token) {
-            return response()->json(['message' => 'Wrong OTP, Please try again'], 400); // Return 400 for bad request
+        if (!$resetRequest || $resetRequest->token != $ValidData['token']) {
+            return response()->json(['message' => 'Wrong OTP, please try again'], 400);
         }
 
         // Check if the OTP is still valid (within 5 minutes)
-        $createdAt = Carbon::parse($resetRequest->created_at);
-        $expiryTime = $createdAt->addMinutes(5); // OTP expires after 5 minutes
-
-        // Use diffInMinutes for accurate comparison
-        if (Carbon::now()->diffInMinutes($createdAt) > 5) {
-            // Delete expired OTP from database
+        if (Carbon::now()->diffInMinutes($resetRequest->created_at) > 5) {
             $resetRequest->delete();
-            return response()->json(['message' => 'OTP has expired, please request a new one'], 400); // OTP expired
+            return response()->json(['message' => 'OTP has expired, please request a new one'], 400);
         }
 
+        // Update the user's password directly
         $user->password = $ValidData['password'];
         $user->save();
 
-        // Delete the used token from the database
+        // Delete the used reset token
         $resetRequest->delete();
 
         return response()->json([
             'message' => 'Password reset successful',
-        ], 200); // Return 200 OK
-}
+        ], 200);
+    }
 }
