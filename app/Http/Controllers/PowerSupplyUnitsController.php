@@ -28,9 +28,9 @@ class PowerSupplyUnitsController extends Controller
             'continuous_wattage'     => 'required|string|regex:/^\d+\s*W$/i',  // Use this for validation
             'efficiency_rating'      => 'required|string',
             'has_required_connectors'=> 'required|boolean', // May be calculated based on connectors below
-            'gpu_6_pin_connectors'   => 'required|integer', //
-            'gpu_8_pin_connectors'   => 'required|integer', //
-            'gpu_12_pin_connectors'  => 'nullable|integer',  // High-end GPUs may need 12-pin connectors
+            'gpu_6_pin_connectors'   => 'required|string', //
+            'gpu_8_pin_connectors'   => 'required|string', //
+            'gpu_12_pin_connectors'  => 'nullable|string',  // High-end GPUs may need 12-pin connectors
             'link'                  => 'required|string'
         ]);
 
@@ -82,9 +82,9 @@ public function update(Request $request, $power_supply_units)
         'continuous_wattage'     => 'required|string|regex:/^\d+\s*W$/i',  // Use this for validation
         'efficiency_rating'      => 'required|string',
         'has_required_connectors'=> 'required|boolean', // May be calculated based on connectors below
-        'gpu_6_pin_connectors'   => 'required|integer', //
-        'gpu_8_pin_connectors'   => 'required|integer', //
-        'gpu_12_pin_connectors'  => 'nullable|integer',  // High-end GPUs may need 12-pin connectors
+        'gpu_6_pin_connectors'   => 'required|string', //
+        'gpu_8_pin_connectors'   => 'required|string', //
+        'gpu_12_pin_connectors'  => 'nullable|string',  // High-end GPUs may need 12-pin connectors
         'link'                  => 'required|string'
     ]);
 

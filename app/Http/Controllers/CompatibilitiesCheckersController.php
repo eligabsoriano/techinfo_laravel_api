@@ -200,19 +200,25 @@ class CompatibilitiesCheckersController extends Controller
             }
 
             // PSU Connector Validation
+            // GPU Connectors
             $required_6_pin_connectors = (int) filter_var($gpu->required_6_pin_connectors, FILTER_SANITIZE_NUMBER_INT);
             $required_8_pin_connectors = (int) filter_var($gpu->required_8_pin_connectors, FILTER_SANITIZE_NUMBER_INT);
             $required_12_pin_connectors = (int) filter_var($gpu->required_12_pin_connectors, FILTER_SANITIZE_NUMBER_INT);
 
-            if ($required_6_pin_connectors > $psu->gpu_6_pin_connectors) {
+            // PSU Connectors
+            $gpu_6_pin_connectors = (int) filter_var($psu->gpu_6_pin_connectors, FILTER_SANITIZE_NUMBER_INT);
+            $gpu_8_pin_connectors = (int) filter_var($psu->gpu_8_pin_connectors, FILTER_SANITIZE_NUMBER_INT);
+            $gpu_12_pin_connectors = (int) filter_var($psu->gpu_12_pin_connectors, FILTER_SANITIZE_NUMBER_INT);
+
+            if ($required_6_pin_connectors > $gpu_6_pin_connectors) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The PSU {$psu->psu_name} does not have enough 6-pin connectors for the GPU {$gpu->gpu_name}.";
             }
-            if ($required_8_pin_connectors > $psu->gpu_8_pin_connectors) {
+            if ($required_8_pin_connectors > $gpu_8_pin_connectors) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The PSU {$psu->psu_name} does not have enough 8-pin connectors for the GPU {$gpu->gpu_name}.";
             }
-            if (!empty($required_12_pin_connectors) && $required_12_pin_connectors > $psu->gpu_12_pin_connectors) {
+            if (!empty($required_12_pin_connectors) && $required_12_pin_connectors > $gpu_12_pin_connectors) {
                 $feedback['is_compatible'] = false;
                 $feedback['issues'][] = "The PSU {$psu->psu_name} does not have enough 12-pin connectors for the GPU {$gpu->gpu_name}.";
             }
@@ -259,27 +265,6 @@ class CompatibilitiesCheckersController extends Controller
             $feedback['is_compatible'] = false;
             $feedback['issues'][] = "The cooler {$cooler->cooler_name} (TDP: {$cooler_tdp}W) cannot handle the combined TDP of the processor {$processor->processor_name} ({$processor_tdp}W) and GPU {$gpu->gpu_name} ({$gpu_tdp}W) totaling " . ($processor_tdp + $gpu_tdp) . "W.";
         }
-
-        // // Case airflow compatibility
-        // if ($gpu_tdp > 250) {
-        //     if ($case->airflow_rating != 'high') {
-        //         $feedback['is_compatible'] = false;
-        //         $feedback['issues'][] = "The GPU {$gpu->gpu_name} has a high TDP, but the case {$case->case_name} does not support sufficient airflow.";
-        //     }
-        // } elseif ($gpu_tdp > 200) {
-        //     if ($case->airflow_rating == 'low') {
-        //         $feedback['is_compatible'] = false;
-        //         $feedback['issues'][] = "The GPU {$gpu->gpu_name} requires moderate airflow, but the case {$case->case_name} has a low airflow rating.";
-        //     } elseif ($case->airflow_rating == 'medium') {
-        //         $feedback['is_compatible'] = true; // Compatible but might run hotter
-        //         $feedback['warnings'][] = "The GPU {$gpu->gpu_name} requires moderate airflow, and the case {$case->case_name} has medium airflow. Consider additional cooling for optimal performance.";
-        //     }
-        // } else {
-        //     // Handling for GPUs with TDP of 200W or less
-        //     $feedback['is_compatible'] = true; // Generally compatible with any airflow rating
-        //     $feedback['warnings'][] = "The GPU {$gpu->gpu_name} has a low TDP, and should work fine with the case {$case->case_name} regardless of its airflow rating.";
-        // }
-
 
         // Check HDD Compatibility
         if ($hdd && $motherboard) {

@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('brand');
             $table->string('wattage');
             $table->string('continuous_wattage');
-            $table->integer('gpu_6_pin_connectors');
-            $table->integer('gpu_8_pin_connectors');
-            $table->integer('gpu_12_pin_connectors');
+            $table->string('gpu_6_pin_connectors');
+            $table->string('gpu_8_pin_connectors');
+            $table->string('gpu_12_pin_connectors');
             $table->string('efficiency_rating');
             $table->boolean('has_required_connectors');
             $table->string('link');
