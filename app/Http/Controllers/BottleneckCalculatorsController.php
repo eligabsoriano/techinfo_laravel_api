@@ -76,7 +76,7 @@ class BottleneckCalculatorsController extends Controller
             $boostClockGhz = (float)$gpu->boost_clock_ghz; // in GHz
 
             // Calculate CPU score with adjusted weights
-            $cpuScore = ($cores * 10) + ($threads * 5) + ($baseClockSpeed * 10) + ($maxTurboBoostClockSpeed * 15) + ($cacheSizeMb * 1);
+            $cpuScore = ($cores * 15) + ($threads * 8) + ($baseClockSpeed * 15) + ($maxTurboBoostClockSpeed * 20) + ($cacheSizeMb * 4);
             $cpuScore *= $resolutionModifier;
 
             // Calculate GPU score with adjusted weights
@@ -87,9 +87,9 @@ class BottleneckCalculatorsController extends Controller
             $bottleneck = $cpuScore < $gpuScore ? 'CPU' : 'GPU';
 
             // Calculate percentage difference
-            $percentageDifference = ($gpuScore > 0)
-                ? abs(($gpuScore - $cpuScore) / $gpuScore) * 100
-                : 0;
+            $percentageDifference = ($cpuScore > $gpuScore)
+            ? (($cpuScore - $gpuScore) / $cpuScore) * 100
+            : (($gpuScore - $cpuScore) / $gpuScore) * 100;
 
             // Format scores and percentage as strings
             $cpuScoreString = number_format($cpuScore, 2, '.', '');
@@ -111,7 +111,7 @@ class BottleneckCalculatorsController extends Controller
         }
     }
 
-    private function generateBottleneckMessage(string $bottleneck, string $percentageDifference, string $resolutionName): string
+    private function generateBottleneckMessage(string $bottleneck, float $percentageDifference, string $resolutionName): string
     {
         if ($percentageDifference < 10) {
             return "The system is perfectly balanced with no noticeable bottleneck at a resolution of $resolutionName. Performance should be optimal across all tasks.";

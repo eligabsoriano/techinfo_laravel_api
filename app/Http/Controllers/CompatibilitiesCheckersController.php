@@ -227,11 +227,6 @@ class CompatibilitiesCheckersController extends Controller
                 $feedback['issues'][] = "The case {$case->case_name} does not support the motherboard form factor {$motherboard->form_factor}.";
             }
 
-            // Check GPU length compatibility with the case
-            if ($case_max_gpu_length_mm < $gpu_length_mm) {
-                $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The GPU {$gpu->gpu_name} is too long for the case {$case->case_name}.";
-            }
         }
 
         // Check CPU Cooler Compatibility
@@ -261,25 +256,25 @@ class CompatibilitiesCheckersController extends Controller
             $feedback['issues'][] = "The cooler {$cooler->cooler_name} (TDP: {$cooler_tdp}W) cannot handle the combined TDP of the processor {$processor->processor_name} ({$processor_tdp}W) and GPU {$gpu->gpu_name} ({$gpu_tdp}W) totaling " . ($processor_tdp + $gpu_tdp) . "W.";
         }
 
-        // Case airflow compatibility
-        if ($gpu_tdp > 250) {
-            if ($case->airflow_rating != 'high') {
-                $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The GPU {$gpu->gpu_name} has a high TDP, but the case {$case->case_name} does not support sufficient airflow.";
-            }
-        } elseif ($gpu_tdp > 200) {
-            if ($case->airflow_rating == 'low') {
-                $feedback['is_compatible'] = false;
-                $feedback['issues'][] = "The GPU {$gpu->gpu_name} requires moderate airflow, but the case {$case->case_name} has a low airflow rating.";
-            } elseif ($case->airflow_rating == 'medium') {
-                $feedback['is_compatible'] = true; // Compatible but might run hotter
-                $feedback['warnings'][] = "The GPU {$gpu->gpu_name} requires moderate airflow, and the case {$case->case_name} has medium airflow. Consider additional cooling for optimal performance.";
-            }
-        } else {
-            // Handling for GPUs with TDP of 200W or less
-            $feedback['is_compatible'] = true; // Generally compatible with any airflow rating
-            $feedback['warnings'][] = "The GPU {$gpu->gpu_name} has a low TDP, and should work fine with the case {$case->case_name} regardless of its airflow rating.";
-        }
+        // // Case airflow compatibility
+        // if ($gpu_tdp > 250) {
+        //     if ($case->airflow_rating != 'high') {
+        //         $feedback['is_compatible'] = false;
+        //         $feedback['issues'][] = "The GPU {$gpu->gpu_name} has a high TDP, but the case {$case->case_name} does not support sufficient airflow.";
+        //     }
+        // } elseif ($gpu_tdp > 200) {
+        //     if ($case->airflow_rating == 'low') {
+        //         $feedback['is_compatible'] = false;
+        //         $feedback['issues'][] = "The GPU {$gpu->gpu_name} requires moderate airflow, but the case {$case->case_name} has a low airflow rating.";
+        //     } elseif ($case->airflow_rating == 'medium') {
+        //         $feedback['is_compatible'] = true; // Compatible but might run hotter
+        //         $feedback['warnings'][] = "The GPU {$gpu->gpu_name} requires moderate airflow, and the case {$case->case_name} has medium airflow. Consider additional cooling for optimal performance.";
+        //     }
+        // } else {
+        //     // Handling for GPUs with TDP of 200W or less
+        //     $feedback['is_compatible'] = true; // Generally compatible with any airflow rating
+        //     $feedback['warnings'][] = "The GPU {$gpu->gpu_name} has a low TDP, and should work fine with the case {$case->case_name} regardless of its airflow rating.";
+        // }
 
 
         // Check HDD Compatibility

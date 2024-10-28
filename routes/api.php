@@ -59,6 +59,8 @@ Route::get('/create-guest-account', [GuestAccountController::class, 'createGuest
 // Route to create a build for a guest account
 Route::post('/guest/create-build', [GuestAccountController::class, 'createGuestBuild']);
 
+Route::apiResource('aggregate', AggregateController::class);
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
